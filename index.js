@@ -7,9 +7,22 @@ async function main() {
     let ScopusData = await parser('data/scopus.csv');
     let arrScopusData = [];
     for(let i = 0; i < ScopusData.length; i++) {
-        arrScopusData.push(ScopusData[i]);
+        arrScopusData.push( {
+            eid: ScopusData[i]['EID'],
+            type: ScopusData[i]['Тип документа'],
+            topic: ScopusData[i]['Название'],
+            doi: ScopusData[i]['DOI'],
+            journal: ScopusData[i]['Название источника'],
+            volume: ScopusData[i]['Том'],
+            issue: ScopusData[i]['Выпуск '],
+            pages: (ScopusData[i]['Страница начала']!='' && ScopusData[i]['Страница окончания']!='')? `${ScopusData[i]['Страница начала']}-${ScopusData[i]['Страница окончания']}`:ScopusData[i]['Статья №'],
+            author: ScopusData[i]['﻿Авторы'],
+            affil: ScopusData[i]['Авторы организаций'],
+            year: ScopusData[i]['Год']
+        });
     }
-    let paper = new PaperS(arrScopusData)
+    let paper = new PaperS();
+    paper.save(arrScopusData)
     console.log(paper)
     //await paper.save()
     //let paper = new PaperS(arrScopusData);
