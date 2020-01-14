@@ -27,29 +27,16 @@ class PaperS {
             freezeTableName: true
         })
         this.model.removeAttribute('id');
-        if(props) { this.data = {
-            eid: props ['EID'],
-            type: props ['Тип документа'],
-            topic: props ['Название'],
-            doi: props ['DOI'],
-            journal: props ['Название источника'],
-            volume: props ['Том'],
-            issue: props ['Выпуск '],
-            pages: (props['Страница начала']!='' && props['Страница окончания']!='')? `${props ['Страница начала']}-${props ['Страница окончания']}`:props ['Статья №'],
-            author: props ['﻿Авторы'],
-            affil: props ['Авторы организаций'],
-            year: props ['Год']
-        }}
     }
     sync() {
         return this.model.sync({
             force: true
         })
     }
-    async save() {
-        console.log(this.data);
+    async save(data) {
+        console.log(data);
         try {
-        return await this.model.bulkCreate(this.data, {
+        return await this.model.bulkCreate(data, {
             fields: ["eid","type","topic","doi","journal","volume","issue","pages","author","affil","year"],
             updateOnDuplicate: ["type","topic","doi","journal","volume","issue","pages","author","affil","year"]
         })
