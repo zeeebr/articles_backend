@@ -21,22 +21,30 @@ async function main() {
             year: ScopusData[i]['Год']
         });
     }
-    let paper = new PaperS();
-    paper.save(arrScopusData)
-    console.log(paper)
-    //await paper.save()
-    //let paper = new PaperS(arrScopusData);
-    //console.log(arrScopusData)
+    let paperS = new PaperS();
+    paperS.save(arrScopusData);
+    
     let WosData = await parser('data/savedrecs.csv', {
         //headers: false,
         separator: '\t',
         quote: ""
     });
+    let arrWosData = [];
     for(let i = 0; i < WosData.length; i++) {
-        let paper = new PaperW(WosData[i])
-        //console.log(paper.data)
-        //await paper.save();
+        arrWosData.push( {
+            eid: WosData[i]['61'],
+            type: WosData[i]['13'],
+            topic: WosData[i]['8'],
+            doi: WosData[i]['54'],
+            journal: WosData[i]['9'],
+            volume: WosData[i]['45'],
+            issue: WosData[i]['46'],
+            pages: (WosData[i]['51']!='' && WosData[i]['52']!='')? `${WosData[i]['51']}-${WosData[i]['52']}`:WosData[i]['53'],
+            author: WosData[i]['5'],
+            affil: WosData[i]['22'],
+            year: WosData[i]['44']
+        });
     }
+    let paperW = new PaperW();
+    paperW.save(arrWosData);
 }
-
-// на выходе из цикла надо получить массив объектов, отформатированных и пригодных для записи в бд
