@@ -22,7 +22,8 @@ async function main() {
         });
     }
     let paperS = new PaperS();
-    paperS.save(arrScopusData);
+    //paperS.save(arrScopusData);
+    paperS.findId('2-s2.0-85076240805')
     
     let WosData = await parser('data/savedrecs.csv', {
         //headers: false,
@@ -46,5 +47,5 @@ async function main() {
         });
     }
     let paperW = new PaperW();
-    paperW.save(arrWosData);
+    //paperW.save(arrWosData);
 }

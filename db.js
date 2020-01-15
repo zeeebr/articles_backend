@@ -41,8 +41,18 @@ class PaperS {
         })
     }    catch(err){
         console.log(err)
+        }
     }
-}
+    async findId(id) {
+        return await this.model.findAll({
+            where: {
+                eid: id
+            },
+            raw: true,
+        }).then(note => {
+            console.log(note)
+        })
+    }
 }
 class PaperW {
     constructor() {
