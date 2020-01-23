@@ -21,6 +21,7 @@ class PaperS {
             issue: Sequelize.STRING,
             pages: Sequelize.STRING,
             author: Sequelize.STRING(10240),
+            ourAuthors: Sequelize.STRING(1024),
             affil: Sequelize.STRING(51200),
             year: Sequelize.STRING
         }, {
@@ -43,15 +44,20 @@ class PaperS {
         console.log(err)
         }
     }
-    async findId(id) {
+    async findAllAuthors() {
         return await this.model.findAll({
-            where: {
-                eid: id
-            },
+            attributes: ['eid', 'author', 'affil'],
             raw: true,
-        }).then(note => {
-            console.log(note)
         })
+    }
+    async saveOurAuthors(data) {
+        try {
+        return await this.model.bulkCreate(data, {
+            updateOnDuplicate: ["ourAuthors"]
+        })
+    }    catch(err){
+        console.log(err)
+        }
     }
 }
 class PaperW {
@@ -69,6 +75,7 @@ class PaperW {
             issue: Sequelize.STRING,
             pages: Sequelize.STRING,
             author: Sequelize.STRING(10240),
+            ourAuthors: Sequelize.STRING(1024),
             affil: Sequelize.STRING(51200),
             year: Sequelize.STRING
         }, {
