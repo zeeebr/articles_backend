@@ -44,9 +44,9 @@ class PaperS {
         console.log(err)
         }
     }
-    async findAllAuthors() {
+    async findAll(params) {
         return await this.model.findAll({
-            attributes: ['eid', 'author', 'affil'],
+            attributes: params,
             raw: true,
         })
     }
@@ -65,7 +65,8 @@ class PaperW {
         this.model = sequelize.define('PaperW', {
             eid: {
                 type: Sequelize.STRING,
-                primaryKey: true
+                primaryKey: true,
+                unique: true
             },
             topic: Sequelize.STRING(4096),
             type: Sequelize.STRING,
@@ -98,6 +99,21 @@ class PaperW {
         console.log(err)
         }
     }
+    async findAll(params) {
+        return await this.model.findAll({
+            attributes: params,
+            raw: true,
+        })
+    }
+    async saveOurAuthors(data) {
+        try {
+        return await this.model.bulkCreate(data, {
+            updateOnDuplicate: ["ourAuthors"]
+        })
+    }    catch(err){
+        console.log(err)
+        }
+    }
 }
 class Author {
     constructor() {
@@ -105,7 +121,8 @@ class Author {
             id: {
                 type: Sequelize.BIGINT,
                 autoIncrement: true,
-                primaryKey: true
+                primaryKey: true,
+                unique: true
             },
             name: Sequelize.STRING,
             alias: Sequelize.STRING,
@@ -119,6 +136,31 @@ class Author {
         return this.model.sync({
             force: true
         })
+    }
+    async save(data) {
+        try {
+        return await this.model.bulkCreate(data,{
+            fields: ["name","alias","inst","cathedra"],
+            updateOnDuplicate: ["name","inst","cathedra"]
+        })
+    }   catch(err){
+        console.log(err)
+        }
+    }
+    async findAll(params) {
+        return await this.model.findAll({
+            attributes: params,
+            raw: true,
+        })
+    }
+    async saveNames(data) {
+        try {
+        return await this.model.bulkCreate(data, {
+            updateOnDuplicate: ["name"]
+        })
+    }    catch(err){
+        console.log(err)
+        }
     }
 }
 
