@@ -92,7 +92,6 @@ async function main() {
     let arrWosAuthors= [];
     for(let i = 0; i < authorWos.length; i++) {
         let arrAffils = authorWos[i].affil.split('; [');
-        //log(arrAffils)
         arrOurAuthors = [];
         for(let k = 0; k < arrAffils.length; k++) {
             let element = arrAffils[k].toLowerCase()
@@ -106,30 +105,33 @@ async function main() {
             || (element.includes('tiu'))
             || (element.includes('tyumen') && element.includes('civil') && element.includes('univ'))
             || (element.includes('tyumen') && element.includes('construct') && element.includes('univ'))
-            || (element.includes('tyumen') && element.includes('architectural') && element.includes('univ'))
-            ) {
-                arrOurAuthors.push(arrAffils[k])
+            || (element.includes('tyumen') && element.includes('architectural') && element.includes('univ'))            )
+            {
+                if(arrAffils[k][0] != '[') {
+                    arrAffils[k] = '[' + arrAffils[k]
+                }
+                let regexpBreckets = arrAffils[k].match(/\[(.*)\]/) || []
+                let nameSplit = regexpBreckets[1].split('; ')
+                function initials(str) {
+                    return str.split(/\s+/).map((w,i) => i ? w.substring(0,1).toUpperCase() + '.' : w).join(' ');
+                }
+                for(let m = 0; m < nameSplit.length; m++) {
+                    let removeComms = nameSplit[m].replace(',', '')
+                    let correctName = initials(removeComms)
+                    arrOurAuthors.push(correctName)
+                }
             }
         }
-        //log(arrOurAuthors)
-        let ourAuthors = arrOurAuthors.join()
-        if(ourAuthors[0] === '')
-            ourAuthors = '[' + ourAuthors + ']'
-        if(ourAuthors[0] != '[') {
-            ourAuthors = '[' + ourAuthors
-        }
-        let regexp = ourAuthors.match(/\[([^\}]*)\]/) || []
-        ourAuthors = regexp[1]
-        //log(ourAuthors)
+        let ourAuthors = arrOurAuthors.join(', ')
         arrWosAuthors.push( {
             eid: authorWos[i]['eid'],
             ourAuthors: ourAuthors
         })
     }
 
-    //console.log(arrWosAuthors)
+    //log(arrWosAuthors)
 
-    paperW.saveOurAuthors(arrWosAuthors); // Записывает "наших" авторов WoS в БД в новый столбец
+    //paperW.saveOurAuthors(arrWosAuthors); // Записывает "наших" авторов WoS в БД в новый столбец
 
     let AuthorsData = await parser('data/authors.csv');
     //console.log(AuthorsData)
