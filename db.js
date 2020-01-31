@@ -46,7 +46,10 @@ class PaperS {
     }
     async findAll(params) {
         return await this.model.findAll({
-            attributes: params,
+            include: [{
+                all: true
+            }],
+        //    attributes: params,
             raw: true,
         })
     }
@@ -149,7 +152,10 @@ class Author {
     }
     async findAll(params) {
         return await this.model.findAll({
-            attributes: params,
+                include: [{
+                    all: true
+                }],
+          //  attributes: params,
             raw: true,
         })
     }
@@ -164,6 +170,55 @@ class Author {
     }
 }
 
+class Connection {
+    constructor() {
+        this.model = sequelize.define('Connection', {
+            id: {
+                type: Sequelize.BIGINT,
+                autoIncrement: true,
+                primaryKey: true
+            },
+            paperId: {
+                type: Sequelize.STRING,
+                foreignKey: true,
+                unique: true
+            },
+            authorId: {
+                type: Sequelize.BIGINT,
+                foreignKey: true,
+                unique: true
+            },
+        }, {
+            freezeTableName: true,
+        })
+    }
+    sync() {
+        return this.model.sync({
+            force: true
+        })
+    }
+    async save(data) {
+        try {
+        return await this.model.bulkCreate(data,{
+            fields: ["paperId","authorId"],
+            updateOnDuplicate: ["paperId","authorId"]
+        })
+    }   catch(err){
+        console.log(err)
+        }
+    }
+    async findAll(params) {
+        return await this.model.findAll({
+            attributes: params,
+            raw: true,
+            include: [{
+                all: true
+            }],
+        })
+    }
+}
+
 exports.PaperS = PaperS;
 exports.PaperW = PaperW;
 exports.Author = Author;
+exports.Connection = Connection;

@@ -1,9 +1,11 @@
-const {PaperS, PaperW, Author} = require('./db')
+const {PaperS, PaperW, Author, Connection} = require('./db')
 
-const paperS = new PaperS();
+/*const paperS = new PaperS();
 const paperW = new PaperW();
-const author = new Author();
+const author = new Author();*/
+const connection = new Connection();
 
-paperS.sync();
+/*paperS.sync();
 paperW.sync();
-author.sync();
+author.sync();*/
+connection.sync();

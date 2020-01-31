@@ -1,5 +1,5 @@
 let parser = require('./parser')
-let {PaperS, PaperW, Author} = require('./db')
+let {PaperS, PaperW, Author, Connection} = require('./db')
 let translit = require('./translit')
 
 main()
@@ -94,7 +94,7 @@ async function main() {
         let arrAffils = authorWos[i].affil.split('; [');
         arrOurAuthors = [];
         for(let k = 0; k < arrAffils.length; k++) {
-            let element = arrAffils[k].toLowerCase()
+          let element = arrAffils[k].toLowerCase()
             if ((element.includes('tyumen') && element.includes('ind') && element.includes('univ'))
             || (element.includes('tiumen') && element.includes('ind') && element.includes('univ'))
             || (element.includes('tyumen') && element.includes('oil') && element.includes('gas'))
@@ -105,16 +105,15 @@ async function main() {
             || (element.includes('tiu'))
             || (element.includes('tyumen') && element.includes('civil') && element.includes('univ'))
             || (element.includes('tyumen') && element.includes('construct') && element.includes('univ'))
-            || (element.includes('tyumen') && element.includes('architectural') && element.includes('univ'))            )
+            || (element.includes('tyumen') && element.includes('architectural') && element.includes('univ')))
             {
                 if(arrAffils[k][0] != '[') {
                     arrAffils[k] = '[' + arrAffils[k]
                 }
                 let regexpBreckets = arrAffils[k].match(/\[(.*)\]/) || []
+                //log(regexpBreckets)
                 let nameSplit = regexpBreckets[1].split('; ')
-                function initials(str) {
-                    return str.split(/\s+/).map((w,i) => i ? w.substring(0,1).toUpperCase() + '.' : w).join(' ');
-                }
+             
                 for(let m = 0; m < nameSplit.length; m++) {
                     let removeComms = nameSplit[m].replace(',', '')
                     let correctName = initials(removeComms)
@@ -136,9 +135,9 @@ async function main() {
     let AuthorsData = await parser('data/authors.csv');
     //console.log(AuthorsData)
     
-    let author = new Author;
+    let author = new Author();
     
-    //author.save(AuthorsData);
+    //author.save(AuthorsData); // записывает авторов из csv в БД
 
     let allAlisas = await author.findAll(['id', 'alias'])
     let arrAlias = [];
@@ -151,17 +150,39 @@ async function main() {
     //console.log(arrAlias)
     //author.saveNames(arrAlias) // транслителирует авторов с русского
  
-    /*let allOurAuthors = await paperS.findAll(['eid', 'ourAuthors'])
-    let ourNames = await author.findAll(['id', 'name'])
+    let allOurAuthors = await paperS.findAll(['eid', 'ourAuthors'])
+    
+    let allOurNames = await author.findAll(['id', 'name'])
+    
+    let arrConnection = []
     for(let i = 0; i < allOurAuthors.length; i++) {
-        let name = allOurAuthors[i].ourAuthors.split(',');
-            for(let k = 0; k < name.length; i++) {
-                let like = name[i]
-                 if (like ===) {
-                    id[findindex(name)] бьютифу поставить or simple find
-                 }
+        let nameAuthor = allOurAuthors[i].ourAuthors.split(', ');
+        for(let k = 0; k < nameAuthor.length; k++) {
+            let findName = allOurNames.find(item => item.name == nameAuthor[k])
+            if(findName) {
+                arrConnection.push({
+                    paperId: allOurAuthors[i]['eid'],
+                    authorId: findName['id']
+                })
+            } else {
+                //log(allOurAuthors[i]['eid'])
             }
-        //log(name)
-    }*/
-  //  console.log(allOurAuthors)
+        }
+    }
+    //log(arrConnection)
+
+    let connection = new Connection()
+
+    //connection.save(arrConnection) // записывает связи в БД
+
+    paperS.model.belongsToMany(author.model, { through: connection.model, foreignKey:'paperId' })
+    author.model.belongsToMany(paperS.model, { through: connection.model, foreignKey:'authorId' })
+
+    let getAll = await paperS.findAll();
+    log (getAll)
+
+}
+
+function initials(str) {
+    return str.split(/\s+/).map((w,i) => i ? w.substring(0,1).toUpperCase() + '.' : w).join(' ');
 }
