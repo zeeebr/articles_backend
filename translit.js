@@ -1,6 +1,7 @@
 function translit(str) {
 	//str = str.toLowerCase(); // все в нижний регистр
 		var cyr2latChars = new Array(
+				
 				['а', 'a'], ['б', 'b'], ['в', 'v'], ['г', 'g'],
 				['д', 'd'],  ['е', 'e'], ['ё', 'yo'], ['ж', 'zh'], ['з', 'z'],
 				['и', 'i'], ['й', 'y'], ['к', 'k'], ['л', 'l'],
