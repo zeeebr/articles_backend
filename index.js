@@ -7,7 +7,7 @@ main ()
 
 async function main() {
     //await parserAuthors('data/authors.csv');
-    //await parserScopus('data/scopus.csv');
+    await parserScopus('data/scopus1.csv');
     await parserWos('data/savedrecs2.csv');
     //await dataOutput();
 }

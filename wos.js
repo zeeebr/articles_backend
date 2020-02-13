@@ -13,6 +13,7 @@ async function main(path) {
         separator: '\t',
         quote: ""
     });
+    //console.log(WosData)
     let arrWosData = [];
     for(let i = 0; i < WosData.length; i++) {
         arrWosData.push( {
@@ -21,12 +22,14 @@ async function main(path) {
             topic: WosData[i]['8'],
             doi: WosData[i]['54'],
             journal: WosData[i]['9'],
+            issn: WosData[i]['38'],
             volume: WosData[i]['45'],
             issue: WosData[i]['46'],
             pages: (WosData[i]['51']!='' && WosData[i]['52']!='')? `${WosData[i]['51']}-${WosData[i]['52']}`:WosData[i]['53'],
             author: WosData[i]['5'],
             affil: WosData[i]['22'],
-            year: WosData[i]['44']
+            year: WosData[i]['44'],
+            frezee: false
         });
     }
     
@@ -112,10 +115,8 @@ async function main(path) {
         }
     }
     //log(arrConnection)
-    //fs.writeFile('arr.txt', JSON.stringify(arrConnection))
+    fs.writeFile('arr.txt', JSON.stringify(arrConnection))
 
-    //let findWosSome = await paperW.findSome('WOS:000452093000014')
-    //log(findWosSome)
 
     await connection.save(arrConnection) // Records connections between articles and authors
 }

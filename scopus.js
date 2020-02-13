@@ -8,6 +8,7 @@ const log = console.log;
 
 async function main(path) {
     let ScopusData = await parser(path);
+    //console.log(ScopusData);
     let arrScopusData = [];
     for(let i = 0; i < ScopusData.length; i++) {
         arrScopusData.push( {
@@ -16,12 +17,14 @@ async function main(path) {
             topic: ScopusData[i]['Название'],
             doi: ScopusData[i]['DOI'],
             journal: ScopusData[i]['Название источника'],
+            issn: (ScopusData[i]['ISSN'] != '') ? `${ScopusData[i]['ISSN']}` : ScopusData[i]['ISBN'],
             volume: ScopusData[i]['Том'],
             issue: ScopusData[i]['Выпуск '],
             pages: (ScopusData[i]['Страница начала']!='' && ScopusData[i]['Страница окончания']!='')? `${ScopusData[i]['Страница начала']}-${ScopusData[i]['Страница окончания']}`:ScopusData[i]['Статья №'],
             author: ScopusData[i]['﻿Авторы'],
             affil: ScopusData[i]['Авторы организаций'],
-            year: ScopusData[i]['Год']
+            year: ScopusData[i]['Год'],
+            frezee: false
         });
     }
 

@@ -25,7 +25,8 @@ class PaperS {
             author: Sequelize.STRING(10240),
             ourAuthors: Sequelize.STRING(1024),
             affil: Sequelize.STRING(51200),
-            year: Sequelize.STRING
+            year: Sequelize.STRING,
+            frezee: Sequelize.BOOLEAN
         }, {
             freezeTableName: true
         })
@@ -39,8 +40,8 @@ class PaperS {
     async save(data) {
         try {
         await this.model.bulkCreate(data, {
-            fields: ["eid","type","topic","doi","journal","volume","issue","pages","author","affil","year"],
-            updateOnDuplicate: ["type","topic","doi","journal","volume","issue","pages","author","affil","year"]
+            fields: ["eid","type","topic","doi","journal","issn","volume","issue","pages","author","affil","year","frezee"],
+            updateOnDuplicate: ["type","topic","doi","journal","issn","volume","issue","pages","author","affil","year"]
         })
         return console.log('\x1b[36m%s\x1b[0m', 'Scopus CSV file is written to the database!')
     }   catch(err){
@@ -105,7 +106,7 @@ class PaperW {
             ourAuthors: Sequelize.STRING(1024),
             affil: Sequelize.STRING(51200),
             year: Sequelize.STRING,
-            //frezee: Sequelize.STRING
+            frezee: Sequelize.BOOLEAN
         }, {
             freezeTableName: true
         })
@@ -119,19 +120,30 @@ class PaperW {
     async save(data) {
         try {
         await this.model.bulkCreate(data,{
-            fields: ["eid","type","topic","doi","journal","volume","issue","pages","author","affil","year"],
-            updateOnDuplicate: ["type","topic","doi","journal","volume","issue","pages","author","affil","year"]
+            fields: ["eid","type","topic","doi","journal","issn","volume","issue","pages","author","affil","year","frezee"],
+            updateOnDuplicate: ["type","topic","doi","journal","issn","volume","issue","pages","author","affil","year"]
         })
         return console.log('\x1b[36m%s\x1b[0m', 'WoS CSV file is written to the database!')
     }   catch(err){
         console.log(err)
         }
     }
+    async update(data) {
+        try {
+            await this.model.bulkCreate(data,{
+                fields: ["eid","type","topic","doi","journal","issn","volume","issue","pages","author","ourAuthors","affil","year","frezee","createdAt","updatedAt"],
+                updateOnDuplicate: ["type","topic","doi","journal","issn","volume","issue","pages","author","ourAuthors","affil","year","frezee","createdAt","updatedAt"]
+            })
+            return console.log('\x1b[36m%s\x1b[0m', 'Data updated')
+        }   catch(err){
+            console.log(err)
+            }
+    }
     async findAll(params) {
         return await this.model.findAll({
-            /*where: {
+            where: {
                 frezee: false
-            },*/
+            },
             attributes: params,
             raw: true,
         })         
@@ -243,13 +255,13 @@ class Connection {
                 type: Sequelize.STRING,
                 foreignKey: true,
                 unique: true,
-                //unique: 'uniqueTag',
+                //unique: 'uniqueTag', // Turn on when starting updTable.js, and turn off the line above
             },
             authorId: {
                 type: Sequelize.BIGINT,
                 foreignKey: true,
                 unique: true,
-                //unique: 'uniqueTag',
+                //unique: 'uniqueTag', // Turn on when starting updTable.js, and turn off the line above
             },
         },
         {
