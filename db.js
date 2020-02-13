@@ -50,19 +50,27 @@ class PaperS {
     }
     async findAll(params) {
         return await this.model.findAll({
-            /*include: [{
-                all: true
-            }],*/
             attributes: params,
             raw: true,
         })
     }
-    async findAllInclude() {
+    async findAllFalse(params) {
+        return await this.model.findAll({
+            where: {
+                frezee: false
+            },
+            attributes: params,
+            raw: true,
+        })
+    }
+    async findAllInclude(params) {
         return await this.model.findAll({
             include: [{
                 all: true
             }],
-            //attributes: params,
+            where: {
+                eid: params
+            },
             raw: true,
         })
     }
@@ -141,12 +149,35 @@ class PaperW {
     }
     async findAll(params) {
         return await this.model.findAll({
+            attributes: params,
+            raw: true,
+        })         
+    }
+    async findAllFalse(params) {
+        return await this.model.findAll({
             where: {
                 frezee: false
             },
             attributes: params,
             raw: true,
+        })
+    }
+    async findAllWithTrue(params) {
+        return await this.model.findAll({
+            attributes: params,
+            raw: true,
         })         
+    }
+    async findAllInclude(params) {
+        return await this.model.findAll({
+            include: [{
+                all: true
+            }],
+            where: {
+                eid: params
+            },
+            raw: true,
+        })
     }
     async findSome(params) {
         return await this.model.findAll({
@@ -180,13 +211,15 @@ class Author {
                 primaryKey: true,
                 //unique: true
             },
+                        shortName: Sequelize.STRING,
             name: Sequelize.STRING,
             alias: {
                 type: Sequelize.STRING,
                 unique: true
             },
             inst: Sequelize.STRING,
-            cathedra: Sequelize.STRING
+            cathedra: Sequelize.STRING,
+            frezee: Sequelize.BOOLEAN
         }, {
             freezeTableName: true
         })
@@ -199,8 +232,8 @@ class Author {
     async save(data) {
         try {
         await this.model.bulkCreate(data,{
-            fields: ["name","alias","inst","cathedra"],
-            updateOnDuplicate: ["name","inst","cathedra"]
+            fields: ["alias","inst","cathedra","frezee"],
+            updateOnDuplicate: ["inst","cathedra"]
         })
         console.log('\x1b[36m%s\x1b[0m', 'Authors CSV file is written to the database!')
         return 
@@ -220,29 +253,42 @@ class Author {
         console.log(err)
         }
     }
+    async saveShortNames(data) {
+        try {
+        await this.model.bulkCreate(data, {
+            fields: ["shortName","alias"],
+            updateOnDuplicate: ["shortName"]
+        })
+        console.log('\x1b[36m%s\x1b[0m', 'Authors short names are recorded in the database!')
+        return 
+    }   catch(err){
+        console.log(err)
+        }
+    }
     async findAll(params) {
         return await this.model.findAll({
-            /*where: {
-                inst: params
-            },
-              include: [{
-                all: true
-            }],*/
             attributes: params,
             raw: true,
         })
     }
-    async findAllInclude() {
+    async findAllFrezeeFalse(params) {
+        return await this.model.findAll({
+            where: {
+                frezee: false
+            },
+            attributes: params,
+            raw: true,
+        })
+    }
+    async findAllInclude(params) {
         return await this.model.findAll({
             include: [{
                 all: true
             }],
-            //attributes: params,
             raw: true,
         })
     }
 }
-
 class Connection {
     constructor() {
         this.model = sequelize.define('Connection', {
@@ -294,8 +340,18 @@ class Connection {
             }],
         })
     }
+    async findAllInclude(params) {
+        return await this.model.findAll({
+            include: [{
+                all: true
+            }],
+            where: {
+                paperId: params
+            },
+            raw: true,
+        })
+    }
 }
-
 class Done {
     constructor() {
         this.model = sequelize.define('Done', {

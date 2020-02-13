@@ -8,6 +8,13 @@ const log = console.log;
 const fs = require('fs').promises;
 
 async function main(path) {
+    await parserWos(path);
+    await parserAuthors();
+    await parserConnections();
+}
+
+// Writes all WoS records from the CSV to the DB
+async function parserWos(path) {
     let WosData = await parser(path, {
         //headers: false,
         separator: '\t',
@@ -22,7 +29,7 @@ async function main(path) {
             topic: WosData[i]['8'],
             doi: WosData[i]['54'],
             journal: WosData[i]['9'],
-            issn: WosData[i]['38'],
+            issn: (WosData[i]['38']!='')? `${WosData[i]['38']}`:WosData[i]['39'],
             volume: WosData[i]['45'],
             issue: WosData[i]['46'],
             pages: (WosData[i]['51']!='' && WosData[i]['52']!='')? `${WosData[i]['51']}-${WosData[i]['52']}`:WosData[i]['53'],
@@ -33,9 +40,12 @@ async function main(path) {
         });
     }
     
-    await paperW.save(arrWosData); // Writes all WoS records from the CSV to the DB
+    await paperW.save(arrWosData); 
+}
 
-    let authorWos = await paperW.findAll(['eid', 'affil'])
+// Parses organization employees
+async function parserAuthors() {
+    let authorWos = await paperW.findAllFalse(['eid', 'affil'])
     //console.log(authorWos)
     let arrWosAuthors= [];
     for(let i = 0; i < authorWos.length; i++) {
@@ -68,7 +78,7 @@ async function main(path) {
                         arrOurAuthors.push(correctName)
                     }
                 } else {
-                    console.log(authorWos[i]['eid'])
+                    //console.log(authorWos[i]['eid'])
                 }
                           
             }
@@ -82,11 +92,14 @@ async function main(path) {
 
     //log(arrWosAuthors)
 
-    await paperW.saveOurAuthors(arrWosAuthors); // Parses organization employees
+    await paperW.saveOurAuthors(arrWosAuthors); 
+}
 
-    let allOurAuthors = await paperW.findAll(['eid', 'ourAuthors'])
+// Records connections between articles and authors
+async function parserConnections() {
+    let allOurAuthors = await paperW.findAllWithTrue(['eid', 'ourAuthors'])
     
-    let allOurNames = await author.findAll(['id', 'name'])
+    let allOurNames = await author.findAll(['id', 'shortName', 'name'])
     
     let arrConnection = []
     for(let i = 0; i < allOurAuthors.length; i++) {
@@ -99,26 +112,25 @@ async function main(path) {
                         paperId: allOurAuthors[i]['eid'],
                         authorId: findName['id']
                     })
-                } else {
-                    let regexpTest = /(.*)\s(.\.)(.\.)/
-                    let findName = allOurNames.find(item => item.name == nameAuthor[k].replace(regexpTest, '$1 $2'))
-                    if(findName) {
-                        arrConnection.push({
-                            paperId: allOurAuthors[i]['eid'],
-                            authorId: findName['id']
-                        })
-                    }
                 }
             } else {
-                //log(allOurAuthors[i]['eid'])
+                let findName = allOurNames.find(item => item.shortName == nameAuthor[k])
+                if(findName) {
+                    arrConnection.push({
+                        paperId: allOurAuthors[i]['eid'],
+                        authorId: findName['id']
+                    })
+                } else {
+                    log(allOurAuthors[i]['eid'])
+                }
             }
         }
     }
     //log(arrConnection)
-    fs.writeFile('arr.txt', JSON.stringify(arrConnection))
+    //fs.writeFile('arr.txt', JSON.stringify(arrConnection))
 
 
-    await connection.save(arrConnection) // Records connections between articles and authors
+    await connection.save(arrConnection) 
 }
 
 module.exports = main;

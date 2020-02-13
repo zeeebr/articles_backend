@@ -1,14 +1,15 @@
 const {PaperS, PaperW, Author, Connection, Done} = require('./db')
 
-//const paperS = new PaperS();
-//const paperW = new PaperW();
+const paperS = new PaperS();
+const paperW = new PaperW();
 const author = new Author();
-//const connection = new Connection();
-//const done = new Done();
+const connection = new Connection();
+const done = new Done();
 
-//paperS.sync();
-//paperW.sync();
+paperS.sync();
+paperW.sync();
 author.sync();
-//connection.sync();
-//done.sync();
+connection.sync();
+done.sync();
+
 console.log('\x1b[36m%s\x1b[0m', 'Done!')

@@ -5,8 +5,16 @@ const paperS = new PaperS();
 const author = new Author();
 const connection = new Connection();
 const log = console.log;
+const fs = require('fs').promises;
 
 async function main(path) {
+    await parserScopus(path);
+    await parserAuthors();
+    await parserConnections();
+}
+
+// Writes all Scopus records from the CSV to the DB
+async function parserScopus(path) {
     let ScopusData = await parser(path);
     //console.log(ScopusData);
     let arrScopusData = [];
@@ -27,10 +35,13 @@ async function main(path) {
             frezee: false
         });
     }
+    
+    await paperS.save(arrScopusData); 
+}
 
-    await paperS.save(arrScopusData); // Writes all Scopus records from the CSV to the DB
-
-    let authorScopus = await paperS.findAll(['eid', 'author', 'affil'])
+// Parses organization employees
+async function parserAuthors() {
+    let authorScopus = await paperS.findAllFalse(['eid', 'author', 'affil'])
     //console.log(authorScopus)
     let arrScopusAuthors= [];
     for(let i = 0; i < authorScopus.length; i++) {
@@ -59,13 +70,15 @@ async function main(path) {
     }
     //console.log(arrScopusAuthors)
 
-    await paperS.saveOurAuthors(arrScopusAuthors); // Parses organization employees
+    await paperS.saveOurAuthors(arrScopusAuthors); 
+}
 
+async function parserConnections() {
     let allOurAuthors = await paperS.findAll(['eid', 'ourAuthors'])
-    
-    let allOurNames = await author.findAll(['id', 'name'])
+    let allOurNames = await author.findAll(['id', 'shortName', 'name'])
     
     let arrConnection = []
+    let errConnection = []
     for(let i = 0; i < allOurAuthors.length; i++) {
         let nameAuthor = allOurAuthors[i].ourAuthors.split(', ');
         for(let k = 0; k < nameAuthor.length; k++) {
@@ -76,22 +89,24 @@ async function main(path) {
                         paperId: allOurAuthors[i]['eid'],
                         authorId: findName['id']
                     })
-                } else {
-                    let regexpTest = /(.*)\s(.\.)(.\.)/
-                    let findName = allOurNames.find(item => item.name == nameAuthor[k].replace(regexpTest, '$1 $2'))
-                    if(findName) {
-                        arrConnection.push({
-                            paperId: allOurAuthors[i]['eid'],
-                            authorId: findName['id']
-                        })
-                    }
-                }
+                } 
             } else {
-                //log(allOurAuthors[i]['eid'])
+                let findName = allOurNames.find(item => item.shortName == nameAuthor[k])
+                if(findName) {
+                    arrConnection.push({
+                        paperId: allOurAuthors[i]['eid'],
+                        authorId: findName['id']
+                    })
+                } else {
+                    //log(allOurAuthors[i]['eid'])
+                    //errConnection.push(allOurAuthors[i]['eid'])
+                }
             }
         }
     }
     //log(arrConnection)
+    //log(errConnection)
+    //fs.writeFile('error.txt', JSON.stringify(errConnection))
 
     //paperS.model.belongsToMany(author.model, { through: connection.model, foreignKey:'paperId' })
     //author.model.belongsToMany(paperS.model, { through: connection.model, foreignKey:'authorId' })
