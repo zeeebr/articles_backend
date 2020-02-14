@@ -1,102 +1,81 @@
 const parser = require('./parser');
-const {Author, Done} = require('./db');
+const {Author, PaperS, Connection, Done, Eids} = require('./db');
 const {testMiddleName} = require('./utils');
 const author = new Author();
+const paperS = new PaperS();
+const connection = new Connection();
+const eids = new Eids();
 let done = new Done();
+const log = console.log;
 
 async function main () {
-    let findAllScopus = await paperS.findAll(['type', 'journal', 'topic', 'doi', 'eid', 'volume', 'issue', 'pages', 'ourAuthors', 'year'])
+    let eidsData = await parser('data/eids.csv');
+    //log(eidsData)
+
+    await eids.save(eidsData)
+
+    paperS.model.belongsToMany(author.model, { through: connection.model, foreignKey:'paperId' })
+    author.model.belongsToMany(paperS.model, { through: connection.model, foreignKey:'authorId' })
     
+    let findAllScopus = await paperS.findAllInclude(['type', 'journal', 'topic', 'doi', 'eid', 'volume', 'issue', 'pages', 'ourAuthors', 'year'])
+    let oldScopusId = await eids.findAll(['id', 'eid']);
     //log(findAllScopus)
 
-    let findAllScopusAuthor = await author.findAll(['name', 'alias', 'inst', 'cathedra'])
-
-    //log(findAllScopusAuthor)
-    
-    let arrDone = []
+    let newScopus = [];
     for(let i = 0; i < findAllScopus.length; i++) {
-        let names = findAllScopus[i].ourAuthors.split(', ')
-        //log(names)
-        for(let k = 0; k < names.length; k++) {
-            if(testMiddleName(names[k]) == true) {
-                //log(names[k])
-                let findName = findAllScopusAuthor.find(item => item.name == names[k])
-                if(findName) {
-                    arrDone.push({
-                        Индекс: 'Scopus',
-                        Тип: findAllScopus[i].type,
-                        ИФ: '',
-                        Квартиль:  '',
-                        Издание: findAllScopus[i].journal,
-                        Статья: findAllScopus[i].topic,
-                        DOI: findAllScopus[i].doi,
-                        Идентификатор: findAllScopus[i].eid.substr(7, 11),
-                        ID: '',
-                        Name: '',
-                        Макрос: '',
-                        Дубляж: '',
-                        Номер: 'Volume '+findAllScopus[i].volume+' Issue '+findAllScopus[i].issue,
-                        Страницы: findAllScopus[i].pages,
-                        Автор: findName['alias'],
-                        Институт: findName['inst'],
-                        Кафедра: findName['cathedra'],
-                        Год: findAllScopus[i].year
-                    })
-                } 
+        let findEid = oldScopusId.find(item => item.eid == findAllScopus[i]['eid'])
+        if(findEid) {
+            //log('Есть!')
+        } else {
+            if(findAllScopus[i]['Authors.alias']) {
+                newScopus.push({
+                    Индекс: 'Scopus',
+                    Тип: findAllScopus[i].type,
+                    ИФ: '',
+                    Квартиль:  '',
+                    Издание: findAllScopus[i].journal,
+                    Статья: findAllScopus[i].topic,
+                    DOI: findAllScopus[i].doi,
+                    Идентификатор: findAllScopus[i].eid.substr(7, 11),
+                    ID: '',
+                    Name: '',
+                    Макрос: '',
+                    Дубляж: '',
+                    Номер: ((findAllScopus[i].volume) ? `${'Volume '+findAllScopus[i].volume+', '}` : '')+((findAllScopus[i].issue) ? `${'Issue '+findAllScopus[i].issue}` : ''),
+                    //'Volume '+findAllScopus[i].volume+' Issue '+findAllScopus[i].issue,
+                    Страницы: findAllScopus[i].pages,
+                    Автор: findAllScopus[i]['Authors.alias'],
+                    Институт: findAllScopus[i]['Authors.inst'],
+                    Кафедра: findAllScopus[i]['Authors.cathedra'],
+                    Год: findAllScopus[i].year
+                })
             } else {
-                let regexpTest = /(.*)\s(.\.)(.\.)/
-                let findName = findAllScopusAuthor.find(item => item.name.replace(regexpTest, '$1 $2') == names[k])
-                //log(findName)
-                if(findName) {
-                    arrDone.push({
-                        Индекс: 'Scopus',
-                        Тип: findAllScopus[i].type,
-                        ИФ: '',
-                        Квартиль:  '',
-                        Издание: findAllScopus[i].journal,
-                        Статья: findAllScopus[i].topic,
-                        DOI: findAllScopus[i].doi,
-                        Идентификатор: findAllScopus[i].eid.substr(7, 11),
-                        ID: '',
-                        Name: '',
-                        Макрос: '',
-                        Дубляж: '',
-                        Номер: 'Volume '+findAllScopus[i].volume+' Issue '+findAllScopus[i].issue,
-                        Страницы: findAllScopus[i].pages,
-                        Автор: findName['alias'],
-                        Институт: findName['inst'],
-                        Кафедра: findName['cathedra'],
-                        Год: findAllScopus[i].year
-                    })
-                } else {
-                    arrDone.push({
-                        Индекс: 'Scopus',
-                        Тип: findAllScopus[i].type,
-                        ИФ: '',
-                        Квартиль:  '',
-                        Издание: findAllScopus[i].journal,
-                        Статья: findAllScopus[i].topic,
-                        DOI: findAllScopus[i].doi,
-                        Идентификатор: findAllScopus[i].eid.substr(7, 11),
-                        ID: '',
-                        Name: '',
-                        Макрос: '',
-                        Дубляж: '',
-                        Номер: 'Volume '+findAllScopus[i].volume+' Issue '+findAllScopus[i].issue,
-                        Страницы: findAllScopus[i].pages,
-                        Автор: names[k],
-                        Институт: '',
-                        Кафедра: '',
-                        Год: findAllScopus[i].year
-                    })
-                }
+                newScopus.push({
+                    Индекс: 'Scopus',
+                    Тип: findAllScopus[i].type,
+                    ИФ: '',
+                    Квартиль:  '',
+                    Издание: findAllScopus[i].journal,
+                    Статья: findAllScopus[i].topic,
+                    DOI: findAllScopus[i].doi,
+                    Идентификатор: findAllScopus[i].eid.substr(7, 11),
+                    ID: '',
+                    Name: '',
+                    Макрос: '',
+                    Дубляж: '',
+                    Номер: ((findAllScopus[i].volume) ? `${'Volume '+findAllScopus[i].volume+', '}` : '')+((findAllScopus[i].issue) ? `${'Issue '+findAllScopus[i].issue}` : ''),
+                    Страницы: findAllScopus[i].pages,
+                    Автор: findAllScopus[i]['ourAuthors'],
+                    Институт: '',
+                    Кафедра: '',
+                    Год: findAllScopus[i].year
+                })
             }
+            
         }
     }
-    
-    //log(arrDone)
-    
-    done.save(arrDone)
+    //log(newScopus)
+    done.save(newScopus)
 }
 
 module.exports = main;

@@ -6,8 +6,8 @@ const dataOutput = require('./output');
 main ()
 
 async function main() {
-    await parserAuthors('data/authors.csv');
-    await parserScopus('data/scopus.csv');
-    await parserWos('data/savedrecs.csv');
-    //await dataOutput();
+    //await parserAuthors('data/authors.csv');
+    //await parserScopus('data/scopus.csv');
+    //await parserWos('data/savedrecs.csv');
+    await dataOutput();
 }

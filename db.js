@@ -68,9 +68,9 @@ class PaperS {
             include: [{
                 all: true
             }],
-            where: {
+            /*where: {
                 eid: params
-            },
+            },*/
             raw: true,
         })
     }
@@ -394,9 +394,8 @@ class Done {
             updateOnDuplicate: ["Индекс","Тип", "ИФ", "Квартиль", "Издание", "Статья", "DOI", "Идентификатор", "Номер", "Страницы", "Автор", "Институт", "Кафедра", "Год"]
         })
     }   catch(err){
-        console.log(err)
-        //console.log(err.message)
-        fs.writeFileSync("err.txt", err)
+        console.log(err.message)
+        //fs.writeFileSync("err.txt", err)
         //console.log(err.sql)
         //[ 'name', 'parent', 'original', 'sql', 'parameters' ]
         }
@@ -411,9 +410,52 @@ class Done {
         })
     }
 }
+class Eids {
+    constructor() {
+        this.model = sequelize.define('Eids', {
+            id: {
+                type: Sequelize.BIGINT,
+                autoIncrement: true,
+                primaryKey: true
+            },
+            eid: {
+                type: Sequelize.STRING,
+                unique: true
+            }
+        }, {
+            freezeTableName: true,
+        })
+    }
+    sync() {
+        return this.model.sync({
+            force: true
+        })
+    }
+    async save(data) {
+        try {
+        return await this.model.bulkCreate(data,{
+            fields: ["eid"],
+            updateOnDuplicate: ["eid"]
+        })
+    }   catch(err){
+        console.log(err)
+        //console.log(err.message)
+        fs.writeFileSync("err.txt", err)
+        //console.log(err.sql)
+        //[ 'name', 'parent', 'original', 'sql', 'parameters' ]
+        }
+    }
+    async findAll(params) {
+        return await this.model.findAll({
+            attributes: params,
+            raw: true
+        })
+    }
+}
 
 exports.PaperS = PaperS;
 exports.PaperW = PaperW;
 exports.Author = Author;
 exports.Connection = Connection;
 exports.Done = Done;
+exports.Eids = Eids;

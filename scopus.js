@@ -106,10 +106,7 @@ async function parserConnections() {
     }
     //log(arrConnection)
     //log(errConnection)
-    //fs.writeFile('error.txt', JSON.stringify(errConnection))
-
-    //paperS.model.belongsToMany(author.model, { through: connection.model, foreignKey:'paperId' })
-    //author.model.belongsToMany(paperS.model, { through: connection.model, foreignKey:'authorId' })
+    //fs.writeFile('error.txt', JSON.stringify(errConnection))  
 
     await connection.save(arrConnection) // Records connections between articles and authors
 }
