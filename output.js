@@ -1,6 +1,6 @@
 const parser = require('./parser');
-const {Author, PaperS, Connection, Done, Eids} = require('./db');
-const {testMiddleName} = require('./utils');
+const {Author, PaperS, Connection, Done, Eids} = require('./db'); 
+const {levenshtein} = require('./utils');
 const author = new Author();
 const paperS = new PaperS();
 const connection = new Connection();

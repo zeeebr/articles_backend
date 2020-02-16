@@ -25,7 +25,7 @@ class PaperS {
             author: Sequelize.STRING(10240),
             ourAuthors: Sequelize.STRING(1024),
             affil: Sequelize.STRING(51200),
-            year: Sequelize.STRING,
+            year: Sequelize.INTEGER,
             frezee: Sequelize.BOOLEAN
         }, {
             freezeTableName: true
@@ -48,6 +48,25 @@ class PaperS {
         console.log(err)
         }
     }
+    async update(data) {
+        try {
+            await this.model.bulkCreate(data,{
+                fields: ["eid","type","topic","doi","journal","issn","volume","issue","pages","author","ourAuthors","affil","year","frezee","createdAt","updatedAt"],
+                updateOnDuplicate: ["type","topic","doi","journal","issn","volume","issue","pages","author","ourAuthors","affil","year","frezee","createdAt","updatedAt"]
+            })
+            return console.log('\x1b[36m%s\x1b[0m', 'Data updated')
+        }   catch(err){
+            console.log(err)
+            }
+    }
+    async count(year) {
+        let counter = await this.model.findAll({
+            attributes: [[sequelize.fn('COUNT', sequelize.col('year')), 'count']],
+            where: { year: year },
+            raw: true,
+        })
+        return Number(counter[0]['count'])
+    }
     async findAll(params) {
         return await this.model.findAll({
             attributes: params,
@@ -68,18 +87,17 @@ class PaperS {
             include: [{
                 all: true
             }],
-            /*where: {
+            where: {
                 eid: params
-            },*/
+            },
             raw: true,
         })
     }
     async findSome(params) {
         return await this.model.findAll({
-            include: [{
-                all: true
-            }],
-        //    attributes: params,
+            where: {
+                eid: params
+            },
             raw: true,
         })
     }
@@ -113,7 +131,7 @@ class PaperW {
             author: Sequelize.STRING(10240),
             ourAuthors: Sequelize.STRING(1024),
             affil: Sequelize.STRING(51200),
-            year: Sequelize.STRING,
+            year: Sequelize.INTEGER,
             frezee: Sequelize.BOOLEAN
         }, {
             freezeTableName: true
@@ -135,6 +153,14 @@ class PaperW {
     }   catch(err){
         console.log(err)
         }
+    }
+    async count(year) {
+        let counter = await this.model.findAll({
+            attributes: [[sequelize.fn('COUNT', sequelize.col('year')), 'count']],
+            where: { year: year },
+            raw: true,
+        })
+        return Number(counter[0]['count'])
     }
     async update(data) {
         try {
@@ -377,7 +403,7 @@ class Done {
             Автор: Sequelize.STRING,
             Институт: Sequelize.STRING,
             Кафедра: Sequelize.STRING,
-            Год: Sequelize.STRING,
+            Год: Sequelize.INTEGER,
         }, {
             freezeTableName: true,
         })

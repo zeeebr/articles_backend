@@ -8,9 +8,10 @@ const log = console.log;
 const fs = require('fs').promises;
 
 async function main(path) {
-    await parserScopus(path);
-    await parserAuthors();
-    await parserConnections();
+    //await parserScopus(path);
+    //await parserAuthors();
+    //await parserConnections();
+    await countScopus();
 }
 
 // Writes all Scopus records from the CSV to the DB
@@ -99,14 +100,16 @@ async function parserConnections() {
                     })
                 } else {
                     //log(allOurAuthors[i]['eid'])
-                    //errConnection.push(allOurAuthors[i]['eid'])
+                    errConnection.push({
+                        paperId: allOurAuthors[i]['eid']
+                    })
                 }
             }
         }
     }
     //log(arrConnection)
     //log(errConnection)
-    //fs.writeFile('error.txt', JSON.stringify(errConnection))  
+    fs.writeFile('errorConnectionScopus.json', JSON.stringify(errConnection))  
 
     await connection.save(arrConnection) // Records connections between articles and authors
 }
