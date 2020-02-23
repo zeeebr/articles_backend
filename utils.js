@@ -1,3 +1,8 @@
+// Finds the maximum number in an array
+function getMaxOfArray(numArray) {
+    return Math.max.apply(null, numArray);
+}
+
 // Checks if the author has a middle name
 function testMiddleName(str) {
     let regexpTest = /(.*)\s(.\.)(.\.)/
@@ -56,6 +61,7 @@ function levenshtein(s1, s2, costs) {
     return Math.round((s1.length - (buf[l2 + cutHalf - flip])) / s1.length * 100);
 }
 
+exports.getMaxOfArray = getMaxOfArray;
 exports.testMiddleName = testMiddleName;
 exports.initials = initials;
 exports.levenshtein = levenshtein;

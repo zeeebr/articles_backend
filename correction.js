@@ -8,16 +8,16 @@ const fs = require('fs').promises;
 main();
 
 async function main() {
-    let wos = 'WOS:000349578600049';
-    let scopus = '2-s2.0-85029759181';
+    let wos = 'WOS:000500303500002';
+    let scopus = '2-s2.0-85072884314';
     //await writeOneScopus(scopus)
     //await writeOneWos(wos)
     //await updateOneScopus()
     //await updateOneWos()
     //await findErrorScopus()
     //await updateErrorScopus()
-    await findIncludeScopus(scopus)
-    //await findIncludeWos(wos)
+    //await findIncludeScopus(scopus)
+    await findIncludeWos(wos)
 }
 
 async function writeOneScopus(eid) {
@@ -45,7 +45,7 @@ async function writeOneWos(eid) {
 }
 
 async function updateOneWos() {
-    let data = await fs.readFile('arr.json', 'utf-8');
+    let data = await fs.readFile('arrWos.json', 'utf-8');
     
     console.log(JSON.parse(data))
 
@@ -93,7 +93,7 @@ async function findIncludeScopus(id) {
     paperS.model.belongsToMany(author.model, { through: connection.model, foreignKey:'paperId' })
     author.model.belongsToMany(paperS.model, { through: connection.model, foreignKey:'authorId' })
     
-    let findAllIncludeS = await paperS.findAllInclude(id)
+    let findAllIncludeS = await paperS.findAllIncludeId(id)
     console.log(findAllIncludeS)
 }
 
@@ -101,6 +101,6 @@ async function findIncludeWos(id) {
     paperW.model.belongsToMany(author.model, { through: connection.model, foreignKey:'paperId' })
     author.model.belongsToMany(paperW.model, { through: connection.model, foreignKey:'authorId' })
     
-    let findAllIncludeW = await paperW.findAllInclude(id)
+    let findAllIncludeW = await paperW.findAllIncludeId(id)
     console.log(findAllIncludeW)
 }
