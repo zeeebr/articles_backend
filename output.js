@@ -143,6 +143,7 @@ async function main() {
 
     //log(newPapers)
     done.save(newPapers)
+    return;
 }
 
 module.exports = main;

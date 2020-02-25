@@ -43,6 +43,7 @@ async function parserScopus(path) {
     }
 
     await paperS.save(arrScopusData);
+    return;
 }
 
 // Parses organization employees
@@ -77,6 +78,7 @@ async function parserAuthors() {
     //console.log(arrScopusAuthors)
 
     await paperS.saveOurAuthors(arrScopusAuthors);
+    return;
 }
 
 async function parserConnections() {
@@ -107,6 +109,7 @@ async function parserConnections() {
     fs.writeFile('errorConnectionScopus.json', JSON.stringify(errConnection))
 
     await connection.save(arrConnection) // Records connections between articles and authors
+    return;
 }
 
 module.exports = main;

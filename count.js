@@ -54,7 +54,7 @@ async function main() {
     };
 
     console.table(countTable);
-    return true;
+    return;
 }
 
 module.exports = main;

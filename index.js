@@ -3,9 +3,7 @@ const parserScopus = require('./scopus');
 const parserWos = require('./wos');
 const dataOutput = require('./output');
 const count = require('./count');
-const {
-    sequelize
-} = require('./db')
+
 main()
 
 async function main() {
@@ -14,4 +12,13 @@ async function main() {
     await parserWos('data/savedrecs.csv');
     await dataOutput();
     await count();
-}
+    return;
+} 
+
+/* module.exports = {
+    parserAuthors : parserAuthors,
+    parserScopus : parserScopus,
+    parserWos : parserWos,
+    dataOutput : dataOutput,
+    count : count
+} */

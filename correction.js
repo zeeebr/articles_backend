@@ -9,15 +9,15 @@ main();
 
 async function main() {
     let wos = 'WOS:000500303500002';
-    let scopus = '2-s2.0-85072884314';
+    let scopus = '2-s2.0-85078848294';
     //await writeOneScopus(scopus)
     //await writeOneWos(wos)
     //await updateOneScopus()
     //await updateOneWos()
     //await findErrorScopus()
     //await updateErrorScopus()
-    //await findIncludeScopus(scopus)
-    await findIncludeWos(wos)
+    await findIncludeScopus(scopus)
+    //await findIncludeWos(wos)
 }
 
 async function writeOneScopus(eid) {

@@ -50,6 +50,7 @@ async function main(path) {
 
     await author.saveShortNames(arrShortNames)
     //log(arrShortNames)
+    return;
 }
 
 module.exports = main;
