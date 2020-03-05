@@ -8,15 +8,16 @@ const fs = require('fs').promises;
 main();
 
 async function main() {
-    let wos = 'WOS:000500303500002';
-    let scopus = '2-s2.0-85078848294';
-    //await writeOneScopus(scopus)
+    let wos = 'WOS:000512402800001';
+    let s = '2-s2.0-85079907769';
+    
+    //await writeOneScopus(s)
     //await writeOneWos(wos)
     //await updateOneScopus()
     //await updateOneWos()
     //await findErrorScopus()
     //await updateErrorScopus()
-    await findIncludeScopus(scopus)
+    return await findIncludeScopus(s)
     //await findIncludeWos(wos)
 }
 
@@ -89,12 +90,11 @@ async function updateErrorScopus() {
     await paperS.update(JSON.parse(data))
 }
 
-async function findIncludeScopus(id) {
+async function findIncludeScopus(eid) {
     paperS.model.belongsToMany(author.model, { through: connection.model, foreignKey:'paperId' })
     author.model.belongsToMany(paperS.model, { through: connection.model, foreignKey:'authorId' })
     
-    let findAllIncludeS = await paperS.findAllIncludeId(id)
-    console.log(findAllIncludeS)
+    console.log(await paperS.findAllIncludeId(eid))
 }
 
 async function findIncludeWos(id) {
@@ -104,3 +104,5 @@ async function findIncludeWos(id) {
     let findAllIncludeW = await paperW.findAllIncludeId(id)
     console.log(findAllIncludeW)
 }
+
+module.exports = main;

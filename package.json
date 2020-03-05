@@ -9,6 +9,7 @@
   "author": "zeeebr",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "csv-parser": "^2.3.2",
     "express": "^4.17.1",
     "express-fileupload": "^1.1.6",

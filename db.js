@@ -466,8 +466,8 @@ class Eids {
             },
             eid: {
                 type: Sequelize.STRING,
-                unique: true
-            }
+                unique: true,
+           }
         }, {
             freezeTableName: true,
         })
@@ -479,17 +479,18 @@ class Eids {
     }
     async save(data) {
         try {
-            return await this.model.bulkCreate(data, {
+            await this.model.bulkCreate(data, {
                 fields: ["eid"],
                 updateOnDuplicate: ["eid"]
             })
         } catch (err) {
+            //console.log(err)
             console.log(err)
-            //console.log(err.message)
-            fs.writeFileSync("err.txt", err)
+            //fs.writeFileSync("err.txt", err)
             //console.log(err.sql)
             //[ 'name', 'parent', 'original', 'sql', 'parameters' ]
         }
+        return;
     }
     async findAll(params) {
         return await this.model.findAll({

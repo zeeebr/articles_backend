@@ -9,7 +9,8 @@ const {
 } = require('./db');
 const {
     levenshtein,
-    getMaxOfArray
+    getMaxOfArray,
+    uniqueArr
 } = require('./utils');
 const author = new Author();
 const paperS = new PaperS();
@@ -17,6 +18,7 @@ const paperW = new PaperW();
 const connection = new Connection();
 const eids = new Eids();
 let done = new Done();
+const fs = require('fs').promises;
 const log = console.log;
 
 async function main() {
@@ -53,12 +55,17 @@ async function main() {
     //log(findAllWos)
 
     let newPapers = [];
+    let newEids = [];
 
     for (let i = 0; i < findAllScopus.length; i++) {
         let findEid = oldId.find(item => item.eid == findAllScopus[i]['eid'])
         if (findEid) {
             //log('Есть в экселе!')
         } else {
+            newEids.push({
+                eid: findAllScopus[i]['eid']
+            })
+
             let arrCompare = [];
 
             let s1 = findAllScopus[i]['topic'];
@@ -83,7 +90,7 @@ async function main() {
                 Идентификатор: findAllScopus[i].eid.substr(7, 11),
                 ID: '',
                 Name: '',
-                Макрос: maxCompare,
+                Макрос: maxCompare/100,
                 Дубляж: '',
                 Номер: ((findAllScopus[i].volume) ? `Volume ${findAllScopus[i].volume}` : '') + ((findAllScopus[i].volume) && (findAllScopus[i].issue) ? `, Issue ${+findAllScopus[i].issue}` : ((findAllScopus[i].issue) ? `Issue ${+findAllScopus[i].issue}` : '')),
                 Страницы: findAllScopus[i].pages,
@@ -102,6 +109,10 @@ async function main() {
         if (findEid) {
             //log('Есть в экселе!')
         } else {
+            newEids.push({ 
+                eid: findAllWos[i]['eid'] 
+            })
+
             let arrCompare = [];
 
             let s1 = findAllWos[i]['topic'];
@@ -113,7 +124,9 @@ async function main() {
             }            
 
             let maxCompare = getMaxOfArray(arrCompare);
+
             console.log(maxCompare);
+
             let journalName = findAllWos[i].journal[0].toUpperCase() + findAllWos[i].journal.toLowerCase().slice(1);
 
             let paper = {
@@ -127,7 +140,7 @@ async function main() {
                 Идентификатор: findAllWos[i].eid.substr(4, 15),
                 ID: '',
                 Name: '',
-                Макрос: maxCompare,
+                Макрос: maxCompare/100,
                 Дубляж: '',
                 Номер: ((findAllWos[i].volume) ? `Volume ${findAllWos[i].volume}` : '') + ((findAllWos[i].volume) && (findAllWos[i].issue) ? `, Issue ${findAllWos[i].issue}` : ((findAllWos[i].issue) ? `Issue ${findAllWos[i].issue}` : '')),
                 Страницы: findAllWos[i].pages,
@@ -141,8 +154,19 @@ async function main() {
         }
     }
 
-    //log(newPapers)
-    done.save(newPapers)
+    //log(newEids)
+
+    let uniqueEids = uniqueArr(newEids);
+    
+    await fs.writeFile('./data/newEids.json', JSON.stringify(uniqueEids))
+
+    let data = await fs.readFile('./data/newEids.json', 'utf-8');
+    
+    console.log(JSON.parse(data))
+
+    //await eids.save(JSON.parse(data))
+
+    await done.save(newPapers)
     return;
 }
 

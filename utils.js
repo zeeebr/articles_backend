@@ -61,7 +61,20 @@ function levenshtein(s1, s2, costs) {
     return Math.round((s1.length - (buf[l2 + cutHalf - flip])) / s1.length * 100);
 }
 
+function uniqueArr(arr) {
+    let eids = new Map();
+    let uniqueAdd = []
+    for (let i = 0; i < arr.length; i++) {
+        if (!eids.has(arr[i].eid)) {
+        eids.set(arr[i].eid, true);
+        uniqueAdd.push(arr[i])
+        }
+    }
+    return uniqueAdd;
+}
+
 exports.getMaxOfArray = getMaxOfArray;
 exports.testMiddleName = testMiddleName;
 exports.initials = initials;
 exports.levenshtein = levenshtein;
+exports.uniqueArr = uniqueArr;

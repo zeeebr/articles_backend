@@ -3,6 +3,7 @@ const parserScopus = require('./scopus');
 const parserWos = require('./wos');
 const dataOutput = require('./output');
 const count = require('./count');
+const correction = require('./correction');
 
 main()
 
@@ -20,5 +21,6 @@ async function main() {
     parserScopus : parserScopus,
     parserWos : parserWos,
     dataOutput : dataOutput,
-    count : count
+    count : count,
+    correction : correction
 } */
