@@ -20,26 +20,22 @@ app.get("/correction/:id", async (req, res) => {
     //res.sendStatus(200);
 })
 
+app.get("/output", async (req, res) => {
+    let data = await paperManager.dataOutput();
+    res.send(data);
+   // console.log(data);
+})
+
+app.post("/scopus/parser", async (req, res) => {
+    //let data = await paperManager.dataOutput(req.body);
+    console.log(req.body)
+})
+
 app.listen(4000, () => {
     console.log('Example app listening on port 4000!');
 });
 
-/* let artists = [
-    {
-        id: 1,
-        name: "Кино"
-    },
-    {
-        id: 2, 
-        name: "Сплин"
-    },
-    {
-        id: 3,
-        name: "КиШ"
-    }
-];
-
-app.get("/artists", (req, res) => {
+/* app.get("/artists", (req, res) => {
     res.send(artists)
 })
 

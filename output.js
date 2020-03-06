@@ -21,11 +21,13 @@ let done = new Done();
 const fs = require('fs').promises;
 const log = console.log;
 
+//main();
+
 async function main() {
     let eidsData = await parser('data/eids.csv');
     //log(eidsData)
 
-    await eids.save(eidsData)
+    //await eids.save(eidsData)
 
     paperS.model.belongsToMany(author.model, {
         through: connection.model,
@@ -156,18 +158,19 @@ async function main() {
 
     //log(newEids)
 
-    let uniqueEids = uniqueArr(newEids);
+    /* let uniqueEids = uniqueArr(newEids);
     
     await fs.writeFile('./data/newEids.json', JSON.stringify(uniqueEids))
 
     let data = await fs.readFile('./data/newEids.json', 'utf-8');
     
-    console.log(JSON.parse(data))
+    console.log(JSON.parse(data)) */
 
     //await eids.save(JSON.parse(data))
 
-    await done.save(newPapers)
-    return;
+    //await done.save(newPapers)
+
+    return newPapers;
 }
 
 module.exports = main;

@@ -5,7 +5,7 @@ const connection = new Connection();
 const author = new Author();
 const fs = require('fs').promises;
 
-main();
+//main();
 
 async function main() {
     let wos = 'WOS:000512402800001';

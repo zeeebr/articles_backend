@@ -5,7 +5,7 @@ const dataOutput = require('./output');
 const count = require('./count');
 const correction = require('./correction');
 
-main()
+/* main()
 
 async function main() {
     await parserAuthors('data/authors.csv');
@@ -14,13 +14,13 @@ async function main() {
     await dataOutput();
     await count();
     return;
-} 
+}  */
 
-/* module.exports = {
+module.exports = {
     parserAuthors : parserAuthors,
     parserScopus : parserScopus,
     parserWos : parserWos,
     dataOutput : dataOutput,
     count : count,
     correction : correction
-} */
+}
