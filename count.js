@@ -53,8 +53,8 @@ async function main() {
         }
     };
 
-    console.table(countTable);
-    return;
+    //console.table(countTable);
+    return countTable;
 }
 
 module.exports = main;

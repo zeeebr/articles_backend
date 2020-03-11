@@ -13,6 +13,8 @@ const connection = new Connection();
 const log = console.log;
 const fs = require('fs').promises;
 
+//main('data/scopus.csv')
+
 async function main(path) {
     await parserScopus(path);
     await parserAuthors();
@@ -22,7 +24,7 @@ async function main(path) {
 // Writes all Scopus records from the CSV to the DB
 async function parserScopus(path) {
     let ScopusData = await parser(path);
-    //console.log(ScopusData);
+    console.log(ScopusData);
     let arrScopusData = [];
     for (let i = 0; i < ScopusData.length; i++) {
         arrScopusData.push({
@@ -42,7 +44,7 @@ async function parserScopus(path) {
         });
     }
 
-    await paperS.save(arrScopusData);
+    //await paperS.save(arrScopusData);
     return;
 }
 

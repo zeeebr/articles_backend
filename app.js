@@ -4,14 +4,14 @@ const bodyParser = require('body-parser')
 
 const app = express();
 
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: true }))
+
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
-
-/* app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true })) */
 
 app.get("/correction/:id", async (req, res) => {
     let data = await paperManager.correction(req.params.id);
@@ -20,15 +20,22 @@ app.get("/correction/:id", async (req, res) => {
     //res.sendStatus(200);
 })
 
+app.get("/count", async (req, res) => {
+    let data = await paperManager.count();
+    res.send(data);
+    //console.log(data);
+})
+
 app.get("/output", async (req, res) => {
     let data = await paperManager.dataOutput();
     res.send(data);
-   // console.log(data);
+    //console.log(data);
 })
 
 app.post("/scopus/parser", async (req, res) => {
-    //let data = await paperManager.dataOutput(req.body);
+    //await paperManager.parserScopus(JSON.parse(req.body));
     console.log(req.body)
+    res.sendStatus(200)
 })
 
 app.listen(4000, () => {
