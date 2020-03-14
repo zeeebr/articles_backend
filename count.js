@@ -6,7 +6,6 @@ const {
 } = require('./db');
 const paperS = new PaperS();
 const paperW = new PaperW();
-const log = console.log;
 
 async function main() {
     let count15w = await paperW.count('2015');

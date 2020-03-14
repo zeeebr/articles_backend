@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize('test', 'postgres', '2653', {
+const sequelize = new Sequelize('work', 'postgres', '2653', {
     host: 'localhost',
     dialect: 'postgres',
     logging: false
@@ -46,9 +46,9 @@ class PaperS {
             console.log('\x1b[36m%s\x1b[0m', 'Scopus CSV file is written to the database!')
 
         } catch (err) {
-            console.log(err)
+            console.log(err.message)
         }
-        return;
+        return true;
     }
     async update(data) {
         try {
@@ -60,7 +60,7 @@ class PaperS {
         } catch (err) {
             console.log(err)
         }
-        return;
+        return true;
     }
     async count(year) {
         let counter = await this.model.findAll({
@@ -118,7 +118,7 @@ class PaperS {
         } catch (err) {
             console.log(err)
         }
-        return;
+        return true;
     }
 }
 class PaperW {
@@ -162,7 +162,7 @@ class PaperW {
         } catch (err) {
             console.log(err)
         }
-        return;
+        return true;
     }
     async count(year) {
         let counter = await this.model.findAll({
@@ -186,7 +186,7 @@ class PaperW {
         } catch (err) {
             console.log(err)
         }
-        return;
+        return true;
     }
     async findAll(params, include) {
         return await this.model.findAll({
@@ -242,7 +242,7 @@ class PaperW {
         } catch (err) {
             console.log(err)
         }
-        return;
+        return true;
     }
 }
 class Author {
@@ -282,7 +282,7 @@ class Author {
         } catch (err) {
             console.log(err.message)
         }
-        return;
+        return true;
     }
     async saveNames(data) {
         try {
@@ -294,7 +294,7 @@ class Author {
         } catch (err) {
             console.log(err)
         }
-        return;
+        return true;
     }
     async saveShortNames(data) {
         try {
@@ -306,7 +306,7 @@ class Author {
         } catch (err) {
             console.log(err)
         }
-        return;
+        return true;
     }
     async findAll(params) {
         return await this.model.findAll({
@@ -372,7 +372,7 @@ class Connection {
             console.log(err.message)
             //fs.writeFile('err.txt', JSON.stringify(err))
         }
-        return;
+        return true;
     }
     async findAll(params) {
         return await this.model.findAll({
@@ -395,9 +395,9 @@ class Connection {
         })
     }
 }
-class Done {
+class ExportS {
     constructor() {
-        this.model = sequelize.define('Done', {
+        this.model = sequelize.define('ExportS', {
             id: {
                 type: Sequelize.BIGINT,
                 autoIncrement: true,
@@ -408,6 +408,66 @@ class Done {
             ИФ: Sequelize.STRING,
             Квартиль: Sequelize.STRING,
             Издание: Sequelize.STRING(1024),
+            Проверка: Sequelize.STRING,
+            Статья: Sequelize.STRING(1024),
+            DOI: Sequelize.STRING,
+            Идентификатор: Sequelize.STRING,
+            ID: Sequelize.STRING,
+            Name: Sequelize.STRING,
+            Макрос: Sequelize.STRING,
+            Дубляж: Sequelize.STRING,
+            Номер: Sequelize.STRING,
+            Страницы: Sequelize.STRING,
+            Автор: Sequelize.STRING,
+            Институт: Sequelize.STRING,
+            Кафедра: Sequelize.STRING,
+            Год: Sequelize.STRING,
+        }, {
+            freezeTableName: true,
+        })
+    }
+    sync() {
+        return this.model.sync({
+            force: true
+        })
+    }
+    async save(data) {
+        try {
+            await this.model.truncate();
+            await this.model.bulkCreate(data, {
+                fields: ["Индекс", "Тип", "ИФ", "Квартиль", "Издание", "Проверка", "Статья", "DOI", "Идентификатор", "ID", "Name",  "Макрос", "Номер", "Страницы", "Автор", "Институт", "Кафедра", "Год"],
+                updateOnDuplicate: ["Индекс", "Тип", "ИФ", "Квартиль", "Издание", "Статья", "DOI", "Идентификатор", "Макрос", "Номер", "Страницы", "Автор", "Институт", "Кафедра", "Год"]
+            })
+            console.log('\x1b[36m%s\x1b[0m', 'Export new papers complete!')
+        } catch (err) {
+            console.log(err.message)
+            //fs.writeFileSync("err.txt", err)
+            //console.log(err.sql)
+            //[ 'name', 'parent', 'original', 'sql', 'parameters' ]
+        }
+        return true;
+    }
+    async findAll() {
+        return await this.model.findAll({
+            attributes: ["Индекс", "Тип", "ИФ", "Квартиль", "Издание", "Проверка", "Статья", "DOI", "Идентификатор", "ID", "Name",  "Макрос", "Номер", "Страницы", "Автор", "Институт", "Кафедра", "Год"],
+            raw: true
+        })
+    }
+}
+class ExportW {
+    constructor() {
+        this.model = sequelize.define('ExportW', {
+            id: {
+                type: Sequelize.BIGINT,
+                autoIncrement: true,
+                primaryKey: true
+            },
+            Индекс: Sequelize.STRING,
+            Тип: Sequelize.STRING,
+            ИФ: Sequelize.STRING,
+            Квартиль: Sequelize.STRING,
+            Издание: Sequelize.STRING(1024),
+            Проверка: Sequelize.STRING,
             Статья: Sequelize.STRING(1024),
             DOI: Sequelize.STRING,
             Идентификатор: Sequelize.STRING,
@@ -444,7 +504,7 @@ class Done {
             //console.log(err.sql)
             //[ 'name', 'parent', 'original', 'sql', 'parameters' ]
         }
-        return;
+        return true;
     }
     async findAll(params) {
         return await this.model.findAll({
@@ -456,6 +516,7 @@ class Done {
         })
     }
 }
+
 class Eids {
     constructor() {
         this.model = sequelize.define('Eids', {
@@ -490,7 +551,7 @@ class Eids {
             //console.log(err.sql)
             //[ 'name', 'parent', 'original', 'sql', 'parameters' ]
         }
-        return;
+        return true;
     }
     async findAll(params) {
         return await this.model.findAll({
@@ -504,5 +565,6 @@ exports.PaperS = PaperS;
 exports.PaperW = PaperW;
 exports.Author = Author;
 exports.Connection = Connection;
-exports.Done = Done;
+exports.ExportS = ExportS;
+exports.ExportW = ExportW;
 exports.Eids = Eids;

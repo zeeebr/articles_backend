@@ -1,4 +1,3 @@
-const parser = require('./parser');
 const {
     PaperS,
     Author,
@@ -10,8 +9,8 @@ const {
 const paperS = new PaperS();
 const author = new Author();
 const connection = new Connection();
-const log = console.log;
 const fs = require('fs').promises;
+const scopusExport = require('./scopusExport')
 
 //main('data/scopus.csv')
 
@@ -19,14 +18,13 @@ async function main(path) {
     await parserScopus(path);
     await parserAuthors();
     await parserConnections();
+    await scopusExport();
 }
 
-// Writes all Scopus records from the CSV to the DB
-async function parserScopus(path) {
-    let ScopusData = await parser(path);
-    console.log(ScopusData);
+// Writes all Scopus records from API to the DB
+async function parserScopus(ScopusData) {
     let arrScopusData = [];
-    for (let i = 0; i < ScopusData.length; i++) {
+    for (let i in ScopusData) {
         arrScopusData.push({
             eid: ScopusData[i]['EID'],
             type: ScopusData[i]['Тип документа'],
@@ -37,15 +35,15 @@ async function parserScopus(path) {
             volume: ScopusData[i]['Том'],
             issue: ScopusData[i]['Выпуск '],
             pages: (ScopusData[i]['Страница начала'] != '' && ScopusData[i]['Страница окончания'] != '') ? `${ScopusData[i]['Страница начала']}-${ScopusData[i]['Страница окончания']}` : ScopusData[i]['Статья №'],
-            author: ScopusData[i]['﻿Авторы'],
+            author: ScopusData[i]['Авторы'],
             affil: ScopusData[i]['Авторы организаций'],
             year: ScopusData[i]['Год'],
             frezee: false
         });
     }
 
-    //await paperS.save(arrScopusData);
-    return;
+    await paperS.save(arrScopusData);
+    return true;
 }
 
 // Parses organization employees
@@ -80,9 +78,10 @@ async function parserAuthors() {
     //console.log(arrScopusAuthors)
 
     await paperS.saveOurAuthors(arrScopusAuthors);
-    return;
+    return true;
 }
 
+// Records connections between articles and authors
 async function parserConnections() {
     let allOurAuthors = await paperS.findAll(['eid', 'ourAuthors'])
     let allOurNames = await author.findAll(['id', 'shortName', 'name'])
@@ -108,10 +107,10 @@ async function parserConnections() {
     }
     //log(arrConnection)
     //log(errConnection)
-    fs.writeFile('errorConnectionScopus.json', JSON.stringify(errConnection))
+    //fs.writeFile('errorConnectionScopus.json', JSON.stringify(errConnection))
 
-    await connection.save(arrConnection) // Records connections between articles and authors
-    return;
+    await connection.save(arrConnection) 
+    return true;
 }
 
 module.exports = main;

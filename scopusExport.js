@@ -1,10 +1,9 @@
-const parser = require('./parser');
 const {
     Author,
     PaperS,
     PaperW,
     Connection,
-    Done,
+    ExportS,
     Eids
 } = require('./db');
 const {
@@ -17,32 +16,20 @@ const paperS = new PaperS();
 const paperW = new PaperW();
 const connection = new Connection();
 const eids = new Eids();
-let done = new Done();
+const exportS = new ExportS();
 const fs = require('fs').promises;
-const log = console.log;
-
-//main();
 
 async function main() {
-    let eidsData = await parser('data/eids.csv');
-    //log(eidsData)
+    /* let eidsData = await parser('data/eids.csv');
+    log(eidsData)
 
-    //await eids.save(eidsData)
+    await eids.save(eidsData) */
 
     paperS.model.belongsToMany(author.model, {
         through: connection.model,
         foreignKey: 'paperId'
     })
     author.model.belongsToMany(paperS.model, {
-        through: connection.model,
-        foreignKey: 'authorId'
-    })
-
-    paperW.model.belongsToMany(author.model, {
-        through: connection.model,
-        foreignKey: 'paperId'
-    })
-    author.model.belongsToMany(paperW.model, {
         through: connection.model,
         foreignKey: 'authorId'
     })
@@ -54,7 +41,6 @@ async function main() {
         all: true
     }]);
     let oldId = await eids.findAll(['id', 'eid']);
-    //log(findAllWos)
 
     let newPapers = [];
     let newEids = [];
@@ -79,7 +65,7 @@ async function main() {
             }
 
             let maxCompare = getMaxOfArray(arrCompare);
-            log(maxCompare)
+            console.log(maxCompare)
 
             let paper = {
                 Индекс: 'Scopus',
@@ -87,6 +73,7 @@ async function main() {
                 ИФ: '',
                 Квартиль: '',
                 Издание: findAllScopus[i].journal,
+                Проверка: '',
                 Статья: findAllScopus[i].topic,
                 DOI: findAllScopus[i].doi,
                 Идентификатор: findAllScopus[i].eid.substr(7, 11),
@@ -106,56 +93,6 @@ async function main() {
         }
     }
 
-    for (let i = 0; i < findAllWos.length; i++) {
-        let findEid = oldId.find(item => item.eid == findAllWos[i]['eid'])
-        if (findEid) {
-            //log('Есть в экселе!')
-        } else {
-            newEids.push({ 
-                eid: findAllWos[i]['eid'] 
-            })
-
-            let arrCompare = [];
-
-            let s1 = findAllWos[i]['topic'];
-
-            for (let k = 0; k < findAllScopus.length; k++) {
-                let s2 = findAllScopus[k]['topic'];
-                let compare = levenshtein(s1, s2);
-                arrCompare.push(compare)
-            }            
-
-            let maxCompare = getMaxOfArray(arrCompare);
-
-            console.log(maxCompare);
-
-            let journalName = findAllWos[i].journal[0].toUpperCase() + findAllWos[i].journal.toLowerCase().slice(1);
-
-            let paper = {
-                Индекс: 'WoS',
-                Тип: findAllWos[i].type,
-                ИФ: '',
-                Квартиль: '',
-                Издание: journalName,
-                Статья: findAllWos[i].topic,
-                DOI: findAllWos[i].doi,
-                Идентификатор: findAllWos[i].eid.substr(4, 15),
-                ID: '',
-                Name: '',
-                Макрос: maxCompare/100,
-                Дубляж: '',
-                Номер: ((findAllWos[i].volume) ? `Volume ${findAllWos[i].volume}` : '') + ((findAllWos[i].volume) && (findAllWos[i].issue) ? `, Issue ${findAllWos[i].issue}` : ((findAllWos[i].issue) ? `Issue ${findAllWos[i].issue}` : '')),
-                Страницы: findAllWos[i].pages,
-                Автор: ((findAllWos[i]['Authors.alias']) ? findAllWos[i]['Authors.alias'] : findAllWos[i]['ourAuthors']),
-                Институт: ((findAllWos[i]['Authors.alias']) ? findAllWos[i]['Authors.inst'] : ''),
-                Кафедра: ((findAllWos[i]['Authors.alias']) ? findAllWos[i]['Authors.cathedra'] : ''),
-                Год: findAllWos[i].year
-            }
-            
-            newPapers.push(paper)
-        }
-    }
-
     //log(newEids)
 
     /* let uniqueEids = uniqueArr(newEids);
@@ -168,9 +105,9 @@ async function main() {
 
     //await eids.save(JSON.parse(data))
 
-    //await done.save(newPapers)
+    await exportS.save(newPapers)
 
-    return newPapers;
+    return true;
 }
 
 module.exports = main;

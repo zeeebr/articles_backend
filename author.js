@@ -12,7 +12,7 @@ const fs = require('fs').promises;
 
 
 async function main(path) {
-    let authorsData = await parser(path);
+    /* let authorsData = await parser(path);
     //console.log(authorsData)
 
     for (let i = 0; i < authorsData.length; i++) {
@@ -21,7 +21,7 @@ async function main(path) {
 
     //console.log(authorsData)
 
-    await author.save(authorsData); // Writes all Authors from the CSV to the DB
+    await author.save(authorsData); */ // Writes all Authors from the CSV to the DB
 
     let allAlisas = await author.findAllFrezeeFalse(['alias'])
 

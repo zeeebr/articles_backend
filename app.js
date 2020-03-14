@@ -1,6 +1,12 @@
 const express = require("express");
-const paperManager = require('./index')
-const bodyParser = require('body-parser')
+const paperManager = require('./index');
+const paperCorrection = require('./correction');
+const bodyParser = require('body-parser');
+const {
+    ExportS,
+    ExportW
+} = require('./db');
+const exportS = new ExportS();
 
 const app = express();
 
@@ -13,10 +19,10 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.get("/correction/:id", async (req, res) => {
-    let data = await paperManager.correction(req.params.id);
+app.get("/correction/findOneScopus/:id", async (req, res) => {
+    let data = await paperCorrection.findOneScopus(req.params.id);
     res.send(data);
-    console.log(data)
+    //console.log(data)
     //res.sendStatus(200);
 })
 
@@ -26,76 +32,17 @@ app.get("/count", async (req, res) => {
     //console.log(data);
 })
 
-app.get("/output", async (req, res) => {
-    let data = await paperManager.dataOutput();
+app.get("/scopus/export", async (req, res) => {
+    let data = await exportS.findAll();
     res.send(data);
-    //console.log(data);
 })
 
 app.post("/scopus/parser", async (req, res) => {
-    //await paperManager.parserScopus(JSON.parse(req.body));
-    console.log(req.body)
-    res.sendStatus(200)
+    await paperManager.parserScopus(req.body);
+    //console.log(req.body)
+    res.send('200')
 })
 
 app.listen(4000, () => {
     console.log('Example app listening on port 4000!');
 });
-
-/* app.get("/artists", (req, res) => {
-    res.send(artists)
-})
-
-app.get("/artists/:id", (req, res) => {
-    console.log(req.params)
-    let artist = artists.find((artist) => {
-        return artist.id == req.params.id
-    })
-    res.send(artist);
-})
-
-app.post("/artists", (req, res) => {
-    console.log(req.body)
-    let artist = {
-        id: Date.now(),
-        name: req.body.name
-    }
-    artists.push(artist)
-    res.send(artists)
-})
-
-app.put("/artists/:id", (req, res) => {
-    let artist = artists.find((artist) => {
-        return artist.id == req.params.id
-    })
-    artist.name = req.body.name;
-    res.sendStatus(200);
-})
-
-app.delete("/artists/:id", (req, res) => {
-    artists = artists.filter((artist) => {
-        return artist.id != req.params.id; 
-    })
-    res.sendStatus(200);
-})
-
-app.get("/", (req, res) => {
-    res.send("Hello World!");
-})
- 
-app.get("/import", async (req, res) => {
-    await paperManager.parserAuthors('data/authors.csv');
-    await paperManager.parserScopus('data/scopus.csv');
-    await paperManager.parserWos('data/savedrecs.csv');
-    await paperManager.count();
-    
-    res.send("Парсим!");
-});
-
-app.get("/export", async (req, res) => {
-    
-    res.send("Экспортируем!");
-    await paperManager.dataOutput();
-
-}); */
-

@@ -48,7 +48,7 @@ async function parserWos(path) {
     }
 
     await paperW.save(arrWosData);
-    return;
+    return true;
 }
 
 // Parses organization employees
@@ -100,7 +100,7 @@ async function parserAuthors() {
     //log(arrWosAuthors)
 
     await paperW.saveOurAuthors(arrWosAuthors);
-    return;
+    return true;
 }
 
 // Records connections between articles and authors
@@ -128,7 +128,7 @@ async function parserConnections() {
     //fs.writeFile('arr.txt', JSON.stringify(arrConnection))
 
     await connection.save(arrConnection);
-    return;
+    return true;
 }
 
 module.exports = main;

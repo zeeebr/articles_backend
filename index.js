@@ -1,9 +1,8 @@
 const parserAuthors = require('./author');
 const parserScopus = require('./scopus');
 const parserWos = require('./wos');
-const dataOutput = require('./output');
+const exportS = require('./scopusExport');
 const count = require('./count');
-const correction = require('./correction');
 
 /* main()
 
@@ -20,7 +19,6 @@ module.exports = {
     parserAuthors : parserAuthors,
     parserScopus : parserScopus,
     parserWos : parserWos,
-    dataOutput : dataOutput,
-    count : count,
-    correction : correction
+    exportS : exportS,
+    count : count
 }
