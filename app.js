@@ -1,4 +1,5 @@
 const express = require("express");
+const env = require('./env.js');
 const paperManager = require('./index');
 const paperCorrection = require('./correction');
 const bodyParser = require('body-parser');
@@ -43,6 +44,6 @@ app.post("/scopus/parser", async (req, res) => {
     res.send('200')
 })
 
-app.listen(4000, () => {
-    console.log('Example app listening on port 4000!');
+app.listen(env.PORT, () => {
+    console.log(`Example app listening on port ${env.PORT}`);
 });
