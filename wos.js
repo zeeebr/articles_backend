@@ -1,4 +1,3 @@
-const parser = require('./parser');
 const {
     PaperW,
     Author,
@@ -22,11 +21,11 @@ async function main(path) {
 
 // Writes all WoS records from the CSV to the DB
 async function parserWos(path) {
-    let WosData = await parser(path, {
+    /* let WosData = await parser(path, {
         //headers: false,
         separator: '\t',
         quote: ""
-    });
+    }); */
     //console.log(WosData)
     let arrWosData = [];
     for (let i = 0; i < WosData.length; i++) {

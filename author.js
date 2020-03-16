@@ -1,4 +1,3 @@
-const parser = require('./parser');
 const translit = require('./translit');
 const {
     Author

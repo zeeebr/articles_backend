@@ -11,6 +11,8 @@ const exportS = new ExportS();
 
 const app = express();
 
+app.use(express.static('public'));
+
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true }))
 
