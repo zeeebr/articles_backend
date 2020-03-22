@@ -1,4 +1,3 @@
-const parser = require('./parser');
 const {
     Author,
     PaperS,
@@ -17,26 +16,9 @@ const paperS = new PaperS();
 const paperW = new PaperW();
 const connection = new Connection();
 const eids = new Eids();
-let exportW = new ExportW();
-const fs = require('fs').promises;
-
-//main();
+const exportW = new ExportW();
 
 async function main() {
-    let eidsData = await parser('data/eids.csv');
-    //log(eidsData)
-
-    //await eids.save(eidsData)
-
-    paperS.model.belongsToMany(author.model, {
-        through: connection.model,
-        foreignKey: 'paperId'
-    })
-    author.model.belongsToMany(paperS.model, {
-        through: connection.model,
-        foreignKey: 'authorId'
-    })
-
     paperW.model.belongsToMany(author.model, {
         through: connection.model,
         foreignKey: 'paperId'
@@ -58,54 +40,6 @@ async function main() {
     let newPapers = [];
     let newEids = [];
 
-    for (let i = 0; i < findAllScopus.length; i++) {
-        let findEid = oldId.find(item => item.eid == findAllScopus[i]['eid'])
-        if (findEid) {
-            //log('Есть в экселе!')
-        } else {
-            newEids.push({
-                eid: findAllScopus[i]['eid']
-            })
-
-            let arrCompare = [];
-
-            let s1 = findAllScopus[i]['topic'];
-
-            for (let k = 0; k < findAllWos.length; k++) {
-                let s2 = findAllWos[k]['topic'];
-                let compare = levenshtein(s1, s2);
-                arrCompare.push(compare)
-            }
-
-            let maxCompare = getMaxOfArray(arrCompare);
-            log(maxCompare)
-
-            let paper = {
-                Индекс: 'Scopus',
-                Тип: findAllScopus[i].type,
-                ИФ: '',
-                Квартиль: '',
-                Издание: findAllScopus[i].journal,
-                Проверка: '',
-                Статья: findAllScopus[i].topic,
-                DOI: findAllScopus[i].doi,
-                Идентификатор: findAllScopus[i].eid.substr(7, 11),
-                ID: '',
-                Name: '',
-                Макрос: maxCompare/100,
-                Дубляж: '',
-                Номер: ((findAllScopus[i].volume) ? `Volume ${findAllScopus[i].volume}` : '') + ((findAllScopus[i].volume) && (findAllScopus[i].issue) ? `, Issue ${+findAllScopus[i].issue}` : ((findAllScopus[i].issue) ? `Issue ${+findAllScopus[i].issue}` : '')),
-                Страницы: findAllScopus[i].pages,
-                Автор: ((findAllScopus[i]['Authors.alias']) ? findAllScopus[i]['Authors.alias'] : findAllScopus[i]['ourAuthors']),
-                Институт: ((findAllScopus[i]['Authors.alias']) ? findAllScopus[i]['Authors.inst'] : ''),
-                Кафедра: ((findAllScopus[i]['Authors.alias']) ? findAllScopus[i]['Authors.cathedra'] : ''),
-                Год: findAllScopus[i].year
-            }
-
-            newPapers.push(paper)
-        }
-    }
-
     for (let i = 0; i < findAllWos.length; i++) {
         let findEid = oldId.find(item => item.eid == findAllWos[i]['eid'])
         if (findEid) {
@@ -126,7 +60,6 @@ async function main() {
             }            
 
             let maxCompare = getMaxOfArray(arrCompare);
-
             console.log(maxCompare);
 
             let journalName = findAllWos[i].journal[0].toUpperCase() + findAllWos[i].journal.toLowerCase().slice(1);
@@ -168,9 +101,9 @@ async function main() {
 
     //await eids.save(JSON.parse(data))
 
-    //await done.save(newPapers)
+    await exportW.save(newPapers)
 
-    return newPapers;
+    return true;
 }
 
 module.exports = main;

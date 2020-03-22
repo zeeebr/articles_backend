@@ -9,16 +9,17 @@ const {
 const paperS = new PaperS();
 const author = new Author();
 const connection = new Connection();
-const fs = require('fs').promises;
-const scopusExport = require('./scopusExport')
+const scopusExport = require('./scopusExport');
 
 //main('data/scopus.csv')
 
-async function main(path) {
-    await parserScopus(path);
+async function main(data) {
+    await parserScopus(data);
     await parserAuthors();
     await parserConnections();
     await scopusExport();
+
+    return true;
 }
 
 // Writes all Scopus records from API to the DB

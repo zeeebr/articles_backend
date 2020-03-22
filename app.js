@@ -8,6 +8,7 @@ const {
     ExportW
 } = require('./db');
 const exportS = new ExportS();
+const exportW = new ExportW();
 
 const app = express();
 
@@ -32,7 +33,11 @@ app.get("/correction/findOneScopus/:id", async (req, res) => {
 app.get("/count", async (req, res) => {
     let data = await paperManager.count();
     res.send(data);
-    //console.log(data);
+})
+
+app.post("/scopus/parser", async (req, res) => {
+    await paperManager.parserScopus(req.body);
+    res.send('200')
 })
 
 app.get("/scopus/export", async (req, res) => {
@@ -40,12 +45,16 @@ app.get("/scopus/export", async (req, res) => {
     res.send(data);
 })
 
-app.post("/scopus/parser", async (req, res) => {
-    await paperManager.parserScopus(req.body);
-    //console.log(req.body)
+app.post("/wos/parser", async (req, res) => {
+    await paperManager.parserWos(req.body);
     res.send('200')
 })
 
+app.get("/wos/export", async (req, res) => {
+    let data = await exportW.findAll();
+    res.send(data);
+})
+
 app.listen(env.PORT, () => {
-    console.log(`Example app listening on port ${env.PORT}`);
+    console.log(`App listening on port ${env.PORT}`);
 });

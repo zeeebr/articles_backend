@@ -17,7 +17,6 @@ const paperW = new PaperW();
 const connection = new Connection();
 const eids = new Eids();
 const exportS = new ExportS();
-const fs = require('fs').promises;
 
 async function main() {
     /* let eidsData = await parser('data/eids.csv');

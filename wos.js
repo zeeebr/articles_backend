@@ -10,42 +10,40 @@ const {
 const paperW = new PaperW();
 const author = new Author();
 const connection = new Connection();
-const log = console.log;
+const wosExport = require('./wosExport');
 const fs = require('fs').promises;
 
-async function main(path) {
-    await parserWos(path);
+async function main(data) {
+    await parserWos(data);
     await parserAuthors();
     await parserConnections();
+    await wosExport();
+
+    return true;
 }
 
 // Writes all WoS records from the CSV to the DB
-async function parserWos(path) {
-    /* let WosData = await parser(path, {
-        //headers: false,
-        separator: '\t',
-        quote: ""
-    }); */
-    //console.log(WosData)
+async function parserWos(WosData) {
     let arrWosData = [];
-    for (let i = 0; i < WosData.length; i++) {
+    for (let i in WosData) {
         arrWosData.push({
-            eid: WosData[i]['61'],
-            type: WosData[i]['13'],
-            topic: WosData[i]['8'],
-            doi: WosData[i]['54'],
-            journal: WosData[i]['9'],
-            issn: (WosData[i]['38'] != '') ? `${WosData[i]['38']}` : WosData[i]['39'],
-            volume: WosData[i]['45'],
-            issue: WosData[i]['46'],
-            pages: (WosData[i]['51'] != '' && WosData[i]['52'] != '') ? `${WosData[i]['51']}-${WosData[i]['52']}` : WosData[i]['53'],
-            author: WosData[i]['5'],
-            affil: WosData[i]['22'],
-            year: WosData[i]['44'],
+            eid: WosData[i]['UT'],
+            type: WosData[i]['DT'],
+            topic: WosData[i]['TI'],
+            doi: WosData[i]['DI'],
+            journal: WosData[i]['SO'],
+            issn: (WosData[i]['SN'] != '') ? `${WosData[i]['SN']}` : WosData[i]['EI'],
+            volume: WosData[i]['VL'],
+            issue: WosData[i]['IS'],
+            pages: (WosData[i]['BP'] != '' && WosData[i]['EP'] != '') ? `${WosData[i]['BP']}-${WosData[i]['EP']}` : WosData[i]['AR'],
+            author: WosData[i]['AF'],
+            affil: WosData[i]['C1'],
+            year: WosData[i]['PY'],
             frezee: false
         });
     }
-
+    //await fs.writeFile('./data/newWos.json', JSON.stringify(arrWosData))
+    //console.log(arrWosData)
     await paperW.save(arrWosData);
     return true;
 }
@@ -96,7 +94,7 @@ async function parserAuthors() {
         })
     }
 
-    //log(arrWosAuthors)
+    //console.log(arrWosAuthors)
 
     await paperW.saveOurAuthors(arrWosAuthors);
     return true;
@@ -123,9 +121,8 @@ async function parserConnections() {
             }    
         }
     }
-    //log(arrConnection)
-    //fs.writeFile('arr.txt', JSON.stringify(arrConnection))
 
+    //console.log(arrConnection)
     await connection.save(arrConnection);
     return true;
 }

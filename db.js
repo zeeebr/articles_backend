@@ -161,7 +161,7 @@ class PaperW {
             })
             console.log('\x1b[36m%s\x1b[0m', 'WoS CSV file is written to the database!')
         } catch (err) {
-            console.log(err)
+            console.log(err.message)
         }
         return true;
     }
@@ -450,7 +450,7 @@ class ExportS {
     }
     async findAll() {
         return await this.model.findAll({
-            attributes: ["Индекс", "Тип", "ИФ", "Квартиль", "Издание", "Проверка", "Статья", "DOI", "Идентификатор", "ID", "Name",  "Макрос", "Номер", "Страницы", "Автор", "Институт", "Кафедра", "Год"],
+            attributes: ["Индекс", "Тип", "ИФ", "Квартиль", "Издание", "Проверка", "Статья", "DOI", "Идентификатор", "ID", "Name",  "Макрос", "Дубляж", "Номер", "Страницы", "Автор", "Институт", "Кафедра", "Год"],
             raw: true
         })
     }
@@ -507,13 +507,10 @@ class ExportW {
         }
         return true;
     }
-    async findAll(params) {
+    async findAll() {
         return await this.model.findAll({
-            attributes: params,
-            raw: true,
-            include: [{
-                all: true
-            }],
+            attributes: ["Индекс", "Тип", "ИФ", "Квартиль", "Издание", "Проверка", "Статья", "DOI", "Идентификатор", "ID", "Name",  "Макрос", "Дубляж", "Номер", "Страницы", "Автор", "Институт", "Кафедра", "Год"],
+            raw: true
         })
     }
 }
