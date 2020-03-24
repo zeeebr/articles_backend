@@ -23,16 +23,34 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.get("/correction/findOneScopus/:id", async (req, res) => {
-    let data = await paperCorrection.findOneScopus(req.params.id);
+app.get("/correction/scopus/:id", async (req, res) => {
+    let data = await paperCorrection.getScopus(req.params.id);
     res.send(data);
     //console.log(data)
     //res.sendStatus(200);
 })
 
-app.get("/count", async (req, res) => {
-    let data = await paperManager.count();
+app.get("/correction/wos/:id", async (req, res) => {
+    let data = await paperCorrection.getWos(req.params.id);
     res.send(data);
+    //console.log(data)
+    //res.sendStatus(200);
+})
+
+app.post("/correction/scopus/", async (req, res) => {
+    await paperCorrection.updateScopus(req.body);
+    //res.send(data);
+    //console.log(req.body)
+    //res.sendStatus(200);
+})
+
+app.get("/count", async (req, res) => {
+    try {
+        let data = await paperManager.count();
+        res.send(data);
+    } catch (err) {
+        res.sendStatus(404)
+    }
 })
 
 app.post("/scopus/parser", async (req, res) => {

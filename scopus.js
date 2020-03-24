@@ -10,6 +10,7 @@ const paperS = new PaperS();
 const author = new Author();
 const connection = new Connection();
 const scopusExport = require('./scopusExport');
+const fs = require('fs').promises;
 
 //main('data/scopus.csv')
 
@@ -42,7 +43,8 @@ async function parserScopus(ScopusData) {
             frezee: false
         });
     }
-
+    
+    //fs.writeFile('errorScopus.json', JSON.stringify(arrScopusData))
     await paperS.save(arrScopusData);
     return true;
 }

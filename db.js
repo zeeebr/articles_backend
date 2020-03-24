@@ -227,10 +227,6 @@ class PaperW {
             where: {
                 eid: params
             },
-            /*include: [{
-                all: true
-            }],*/
-            //attributes: params,
             raw: true,
         })
     }

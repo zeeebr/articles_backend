@@ -14,95 +14,38 @@ async function main(eid) {
     //await writeOneScopus('2-s2.0-85041402716')
     //await writeOneWos(wos)
     //await updateOneScopus()
-    //await updateOneWos()
+    //await updateOneWos(wos)
     //await findErrorScopus()
     //await updateErrorScopus()
-    return await findIncludeScopus(eid)
+    //return await findIncludeScopus(eid)
     //await findIncludeWos(wos)
 }
 
-async function findOneScopus(eid) {
+async function getScopus(eid) {
     let findScopusSome = await paperS.findSome(eid);
     return findScopusSome;
 }
 
-async function updateOneScopus() {
-    let data = await fs.readFile('arrScopus.json', 'utf-8');
-    
-    console.log(JSON.parse(data))
-
-    await paperS.update(JSON.parse(data))
+async function updateScopus(data) {
+    await paperS.update([data]);
+    return true;
 }
 
-async function writeOneWos(eid) {
-    let findWosSome = await paperW.findSome(eid)
-
-    //console.log(findWosSome)
-    
-    fs.writeFile('arrWos.json', JSON.stringify(findWosSome))
+async function getWos(eid) {
+    let findWosSome = await paperW.findSome(eid);
+    return findWosSome;
 }
 
-async function updateOneWos() {
-    let data = await fs.readFile('arrWos.json', 'utf-8');
-    
-    console.log(JSON.parse(data))
-
-    await paperW.update(JSON.parse(data))
+async function updateWos(data) {
+    console.log([data])
+    //await paperW.update([data]);
+    return true;
 }
 
-async function findErrorScopus(id) {
-    let errors = JSON.parse(await fs.readFile('errorConnectionScopus.json', 'utf-8'));
-
-    console.log(errors.length+' errors of connections in Scopus articles find')
-
-    let arrScopusPaperError = []
-    for(let i = 0; i < errors.length; i++) {
-        let findScopusSome = await paperS.findSome(errors[i]['paperId'])
-        arrScopusPaperError.push({
-            eid: findScopusSome[0]['eid'],
-            type: findScopusSome[0]['type'],
-            topic: findScopusSome[0]['topic'],
-            doi: findScopusSome[0]['doi'],
-            journal: findScopusSome[0]['journal'],
-            issn: findScopusSome[0]['issn'],
-            volume: findScopusSome[0]['volume'],
-            issue: findScopusSome[0]['issue'],
-            pages: findScopusSome[0]['pages'],
-            author: findScopusSome[0]['author'],
-            ourAuthors: findScopusSome[0]['ourAuthors'],
-            affil: findScopusSome[0]['affil'],
-            year: findScopusSome[0]['year'],
-            frezee: findScopusSome[0]['frezee'],
-        })
-    }
-    //console.log(arrScopusPaperError)
-    fs.writeFile('arrScopus.json', JSON.stringify(arrScopusPaperError))
-}
-
-async function updateErrorScopus() {
-    let data = await fs.readFile('arrScopus.json', 'utf-8');
-    
-    //console.log(JSON.parse(data))
-
-    await paperS.update(JSON.parse(data))
-}
-
-async function findIncludeScopus(eid) {
-    paperS.model.belongsToMany(author.model, { through: connection.model, foreignKey:'paperId' })
-    author.model.belongsToMany(paperS.model, { through: connection.model, foreignKey:'authorId' })
-    
-    return await paperS.findAllIncludeId(eid)
-}
-
-async function findIncludeWos(id) {
-    paperW.model.belongsToMany(author.model, { through: connection.model, foreignKey:'paperId' })
-    author.model.belongsToMany(paperW.model, { through: connection.model, foreignKey:'authorId' })
-    
-    let findAllIncludeW = await paperW.findAllIncludeId(id)
-    console.log(findAllIncludeW)
-}
-
-//module.exports = main;
 module.exports = {
-    findOneScopus : findOneScopus,
+    getScopus : getScopus,
+    updateScopus : updateScopus,
+    getWos : getWos,
+    updateWos : updateWos
+
 }
