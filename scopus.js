@@ -1,7 +1,9 @@
 const {
     PaperS,
     Author,
-    Connection
+    Connection,
+    Eids,
+    NewEidS
 } = require('./db');
 const {
     testMiddleName
@@ -9,17 +11,19 @@ const {
 const paperS = new PaperS();
 const author = new Author();
 const connection = new Connection();
+const eids = new Eids();
+const newEidS = new NewEidS();
 const scopusExport = require('./scopusExport');
 const fs = require('fs').promises;
 
-//main('data/scopus.csv')
 
 async function main(data) {
     await parserScopus(data);
+    await newEidsScopus();
     await parserAuthors();
     await parserConnections();
     await scopusExport();
-
+    
     return true;
 }
 
@@ -46,6 +50,30 @@ async function parserScopus(ScopusData) {
     
     //fs.writeFile('errorScopus.json', JSON.stringify(arrScopusData))
     await paperS.save(arrScopusData);
+
+    return true;
+}
+
+// Records new eids in DB
+async function newEidsScopus() {
+    let findAllScopus = await paperS.findAll(['eid', 'year'], [{
+        all: true
+    }]);
+    let oldId = await eids.findAll(['id', 'eid']);
+
+    let newEidsScopus = [];
+    
+    for (let i = 0; i < findAllScopus.length; i++) {
+        let findEid = oldId.find(item => item.eid == findAllScopus[i]['eid']);
+        !findEid && newEidsScopus.push({
+            eid: findAllScopus[i]['eid'],
+            year: findAllScopus[i]['year']
+        });
+    }
+
+    //console.log(newEids)
+    await newEidS.save(newEidsScopus);
+
     return true;
 }
 

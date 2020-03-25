@@ -65,12 +65,17 @@ app.get("/scopus/export", async (req, res) => {
 
 app.post("/wos/parser", async (req, res) => {
     await paperManager.parserWos(req.body);
-    res.send('200')
+    res.send(200)
 })
 
 app.get("/wos/export", async (req, res) => {
     let data = await exportW.findAll();
     res.send(data);
+})
+
+app.post("/eids", async (req, res) => {
+    await paperManager.updEids();
+    res.sendStatus(200)
 })
 
 app.listen(env.PORT, () => {

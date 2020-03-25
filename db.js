@@ -538,6 +538,7 @@ class Eids {
                 fields: ["eid"],
                 updateOnDuplicate: ["eid"]
             })
+            console.log('\x1b[36m%s\x1b[0m', 'Data updated!')
         } catch (err) {
             //console.log(err)
             console.log(err)
@@ -555,6 +556,116 @@ class Eids {
     }
 }
 
+class NewEidS {
+    constructor() {
+        this.model = sequelize.define('NewEidS', {
+            id: {
+                type: Sequelize.BIGINT,
+                autoIncrement: true,
+                primaryKey: true
+            },
+            eid: {
+                type: Sequelize.STRING,
+                unique: true,
+            },
+            year: Sequelize.STRING
+        }, {
+            freezeTableName: true,
+        })
+    }
+    sync() {
+        return this.model.sync({
+            force: true
+        })
+    }
+    async save(data) {
+        try {
+            await this.model.truncate();
+            await this.model.bulkCreate(data, {
+                fields: ["eid", "year"],
+                updateOnDuplicate: ["eid", "year"]
+            })
+            console.log('\x1b[36m%s\x1b[0m', 'New eids recorded!')
+        } catch (err) {
+            console.log(err.message)
+        }
+        return true;
+    }
+    async findAll(params) {
+        return await this.model.findAll({
+            attributes: params,
+            raw: true
+        })
+    }
+    async count(year) {
+        let counter = await this.model.findAll({
+            attributes: [
+                [sequelize.fn('COUNT', sequelize.col('eid')), 'count']
+            ],
+            where: {
+                year: year
+            },
+            raw: true,
+        })
+        return Number(counter[0]['count'])
+    }
+}
+
+class NewEidW {
+    constructor() {
+        this.model = sequelize.define('NewEidW', {
+            id: {
+                type: Sequelize.BIGINT,
+                autoIncrement: true,
+                primaryKey: true
+            },
+            eid: {
+                type: Sequelize.STRING,
+                unique: true,
+            },
+            year: Sequelize.STRING
+        }, {
+            freezeTableName: true,
+        })
+    }
+    sync() {
+        return this.model.sync({
+            force: true
+        })
+    }
+    async save(data) {
+        try {
+            await this.model.truncate();
+            await this.model.bulkCreate(data, {
+                fields: ["eid", "year"],
+                updateOnDuplicate: ["eid", "year"]
+            })
+            console.log('\x1b[36m%s\x1b[0m', 'New eids recorded!')
+        } catch (err) {
+            console.log(err.message)
+        }
+        return true;
+    }
+    async findAll(params) {
+        return await this.model.findAll({
+            attributes: params,
+            raw: true
+        })
+    }
+    async count(year) {
+        let counter = await this.model.findAll({
+            attributes: [
+                [sequelize.fn('COUNT', sequelize.col('eid')), 'count']
+            ],
+            where: {
+                year: year
+            },
+            raw: true,
+        })
+        return Number(counter[0]['count'])
+    }
+}
+
 exports.PaperS = PaperS;
 exports.PaperW = PaperW;
 exports.Author = Author;
@@ -562,3 +673,5 @@ exports.Connection = Connection;
 exports.ExportS = ExportS;
 exports.ExportW = ExportW;
 exports.Eids = Eids;
+exports.NewEidS = NewEidS;
+exports.NewEidW = NewEidW;

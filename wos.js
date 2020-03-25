@@ -1,7 +1,9 @@
 const {
     PaperW,
     Author,
-    Connection
+    Connection,
+    Eids,
+    NewEidW
 } = require('./db');
 const {
     testMiddleName,
@@ -10,11 +12,14 @@ const {
 const paperW = new PaperW();
 const author = new Author();
 const connection = new Connection();
+const eids = new Eids();
+const newEidW = new NewEidW();
 const wosExport = require('./wosExport');
 const fs = require('fs').promises;
 
 async function main(data) {
     await parserWos(data);
+    await newEidsWos();
     await parserAuthors();
     await parserConnections();
     await wosExport();
@@ -45,6 +50,29 @@ async function parserWos(WosData) {
     //await fs.writeFile('./data/newWos.json', JSON.stringify(arrWosData))
     //console.log(arrWosData)
     await paperW.save(arrWosData);
+    return true;
+}
+
+// Records new eids in DB
+async function newEidsWos() {
+    let findAllWos = await paperW.findAll(['eid', 'year'], [{
+        all: true
+    }]);
+    let oldId = await eids.findAll(['id', 'eid']);
+
+    let newEidsWos = [];
+    
+    for (let i = 0; i < findAllWos.length; i++) {
+        let findEid = oldId.find(item => item.eid == findAllWos[i]['eid']);
+        !findEid && newEidsWos.push({
+            eid: findAllWos[i]['eid'],
+            year: findAllWos[i]['year']
+        });
+    }
+
+    //console.log(newEids)
+    await newEidW.save(newEidsWos);
+
     return true;
 }
 
