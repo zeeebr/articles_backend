@@ -450,6 +450,15 @@ class ExportS {
             raw: true
         })
     }
+    async truncate() {
+        try {
+            await this.model.truncate();
+            console.log('\x1b[36m%s\x1b[0m', 'Truncated export DB!')
+        } catch (err) {
+            console.log(err.message)
+        }
+        return true;
+    }
 }
 class ExportW {
     constructor() {
@@ -508,6 +517,15 @@ class ExportW {
             attributes: ["Индекс", "Тип", "ИФ", "Квартиль", "Издание", "Проверка", "Статья", "DOI", "Идентификатор", "ID", "Name",  "Макрос", "Дубляж", "Номер", "Страницы", "Автор", "Институт", "Кафедра", "Год"],
             raw: true
         })
+    }
+    async truncate() {
+        try {
+            await this.model.truncate();
+            console.log('\x1b[36m%s\x1b[0m', 'Truncated export DB!')
+        } catch (err) {
+            console.log(err.message)
+        }
+        return true;
     }
 }
 
@@ -609,6 +627,15 @@ class NewEidS {
         })
         return Number(counter[0]['count'])
     }
+    async truncate() {
+        try {
+            await this.model.truncate();
+            console.log('\x1b[36m%s\x1b[0m', 'Truncated eids DB!')
+        } catch (err) {
+            console.log(err.message)
+        }
+        return true;
+    }
 }
 
 class NewEidW {
@@ -663,6 +690,15 @@ class NewEidW {
             raw: true,
         })
         return Number(counter[0]['count'])
+    }
+    async truncate() {
+        try {
+            await this.model.truncate();
+            console.log('\x1b[36m%s\x1b[0m', 'Truncated eids DB!')
+        } catch (err) {
+            console.log(err.message)
+        }
+        return true;
     }
 }
 

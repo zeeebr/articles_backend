@@ -39,9 +39,12 @@ app.get("/correction/wos/:id", async (req, res) => {
 
 app.post("/correction/scopus/", async (req, res) => {
     await paperCorrection.updateScopus(req.body);
-    //res.send(data);
-    //console.log(req.body)
-    //res.sendStatus(200);
+    res.sendStatus(200);
+})
+
+app.post("/correction/wos/", async (req, res) => {
+    await paperCorrection.updateWos(req.body);
+    res.sendStatus(200);
 })
 
 app.get("/count", async (req, res) => {
