@@ -63,6 +63,19 @@ class PaperS {
         }
         return true;
     }
+    async delete(id) {
+        try {
+            await this.model.destroy({
+                where: {
+                    eid: id
+                }
+            })
+            console.log('\x1b[36m%s\x1b[0m', `Paper ${id} deleted!`)
+        } catch (err) {
+            console.log(err)
+        }
+        return true;
+    }
     async count(year) {
         let counter = await this.model.findAll({
             attributes: [
@@ -184,6 +197,19 @@ class PaperW {
                 updateOnDuplicate: ["type", "topic", "doi", "journal", "issn", "volume", "issue", "pages", "author", "ourAuthors", "affil", "year", "frezee", "createdAt", "updatedAt"]
             })
             console.log('\x1b[36m%s\x1b[0m', 'Data updated')
+        } catch (err) {
+            console.log(err)
+        }
+        return true;
+    }
+    async delete(id) {
+        try {
+            await this.model.destroy({
+                where: {
+                    eid: id
+                }
+            })
+            console.log('\x1b[36m%s\x1b[0m', `Paper ${id} deleted!`)
         } catch (err) {
             console.log(err)
         }

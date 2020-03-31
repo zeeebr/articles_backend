@@ -20,32 +20,9 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
     next();
 });
-
-app.get("/correction/scopus/:id", async (req, res) => {
-    let data = await paperCorrection.getScopus(req.params.id);
-    res.send(data);
-    //console.log(data)
-    //res.sendStatus(200);
-})
-
-app.get("/correction/wos/:id", async (req, res) => {
-    let data = await paperCorrection.getWos(req.params.id);
-    res.send(data);
-    //console.log(data)
-    //res.sendStatus(200);
-})
-
-app.post("/correction/scopus/", async (req, res) => {
-    await paperCorrection.updateScopus(req.body);
-    res.sendStatus(200);
-})
-
-app.post("/correction/wos/", async (req, res) => {
-    await paperCorrection.updateWos(req.body);
-    res.sendStatus(200);
-})
 
 app.get("/count", async (req, res) => {
     try {
@@ -56,19 +33,9 @@ app.get("/count", async (req, res) => {
     }
 })
 
-app.post("/scopus/parser", async (req, res) => {
-    await paperManager.parserScopus(req.body);
-    res.send('200')
-})
-
 app.get("/scopus/export", async (req, res) => {
     let data = await exportS.findAll();
     res.send(data);
-})
-
-app.post("/wos/parser", async (req, res) => {
-    await paperManager.parserWos(req.body);
-    res.send(200)
 })
 
 app.get("/wos/export", async (req, res) => {
@@ -76,9 +43,59 @@ app.get("/wos/export", async (req, res) => {
     res.send(data);
 })
 
-app.post("/eids", async (req, res) => {
+app.get("/correction/scopus/:id", async (req, res) => {
+    let data = await paperCorrection.getScopus(req.params.id);
+    res.send(data);
+})
+
+app.get("/correction/scopus/connection/:id", async (req, res) => {
+    let data = await paperCorrection.getScopusConnecion(req.params.id);
+    res.send(data);
+})
+
+app.get("/correction/wos/:id", async (req, res) => {
+    let data = await paperCorrection.getWos(req.params.id);
+    res.send(data);
+})
+
+app.get("/correction/wos/connection/:id", async (req, res) => {
+    let data = await paperCorrection.getWosConnecion(req.params.id);
+    res.send(data);
+})
+
+app.put("/correction/scopus/", async (req, res) => {
+    await paperCorrection.updateScopus(req.body);
+    res.sendStatus(200);
+})
+
+app.put("/correction/wos/", async (req, res) => {
+    await paperCorrection.updateWos(req.body);
+    res.sendStatus(200);
+})
+
+app.put("/eids", async (req, res) => {
     await paperManager.updEids();
     res.sendStatus(200)
+})
+
+app.post("/scopus/parser", async (req, res) => {
+    await paperManager.parserScopus(req.body);
+    res.send('200')
+})
+
+app.post("/wos/parser", async (req, res) => {
+    await paperManager.parserWos(req.body);
+    res.send(200)
+})
+
+app.delete("/delete/scopus/:id", async (req, res) => {
+    console.log(req.params.id)
+    await paperCorrection.deleteScopus(req.params.id)
+})
+
+app.delete("/delete/wos/:id", async (req, res) => {
+    console.log(req.params.id)
+    await paperCorrection.deleteWos(req.params.id)
 })
 
 app.listen(env.PORT, () => {
