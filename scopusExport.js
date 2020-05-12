@@ -64,7 +64,7 @@ async function main() {
             }
 
             let maxCompare = getMaxOfArray(arrCompare);
-            console.log(maxCompare)
+            console.log(maxCompare);
 
             let paper = {
                 Индекс: 'Scopus',
@@ -79,7 +79,7 @@ async function main() {
                 ID: '',
                 Name: '',
                 Макрос: maxCompare/100,
-                Дубляж: '',
+                Дубляж: findAllScopus[i].ourAuthors,
                 Номер: ((findAllScopus[i].volume) ? `Volume ${findAllScopus[i].volume}` : '') + ((findAllScopus[i].volume) && (findAllScopus[i].issue) ? `, Issue ${+findAllScopus[i].issue}` : ((findAllScopus[i].issue) ? `Issue ${+findAllScopus[i].issue}` : '')),
                 Страницы: findAllScopus[i].pages,
                 Автор: ((findAllScopus[i]['Authors.alias']) ? findAllScopus[i]['Authors.alias'] : findAllScopus[i]['ourAuthors']),

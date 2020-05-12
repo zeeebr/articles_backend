@@ -27,7 +27,6 @@ async function main(path) {
     for (let i = 0; i < allAlisas.length; i++) {
         allAlisas[i]['name'] = translit(allAlisas[i]['alias'])
     }
-    //fs.writeFile('arr.txt', JSON.stringify(arrAlias))
 
     await author.saveNames(allAlisas) // Translates authors from Russian
 
@@ -48,8 +47,8 @@ async function main(path) {
     }
 
     await author.saveShortNames(arrShortNames)
-    //log(arrShortNames)
-    return;
+    
+    return true;
 }
 
 module.exports = main;

@@ -76,7 +76,7 @@ async function main() {
                 ID: '',
                 Name: '',
                 Макрос: maxCompare/100,
-                Дубляж: '',
+                Дубляж: findAllWos[i].ourAuthors,
                 Номер: ((findAllWos[i].volume) ? `Volume ${findAllWos[i].volume}` : '') + ((findAllWos[i].volume) && (findAllWos[i].issue) ? `, Issue ${findAllWos[i].issue}` : ((findAllWos[i].issue) ? `Issue ${findAllWos[i].issue}` : '')),
                 Страницы: findAllWos[i].pages,
                 Автор: ((findAllWos[i]['Authors.alias']) ? findAllWos[i]['Authors.alias'] : findAllWos[i]['ourAuthors']),
