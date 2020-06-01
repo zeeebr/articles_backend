@@ -68,7 +68,7 @@ async function main() {
 
             let paper = {
                 Индекс: 'Scopus',
-                Тип: findAllScopus[i].type,
+                Тип: findAllScopus[i].type === "Article" ? "Журнал" : (findAllScopus[i].type === "Conference Paper" ? "Конференция" : findAllScopus[i].type),
                 ИФ: '',
                 Квартиль: '',
                 Издание: findAllScopus[i].journal,

@@ -66,7 +66,7 @@ async function main() {
 
             let paper = {
                 Индекс: 'WoS',
-                Тип: findAllWos[i].type,
+                Тип: findAllWos[i].type === "Article" ? "Журнал" : (findAllWos[i].type === "Proceedings Paper" ? "Конференция" : findAllWos[i].type),
                 ИФ: '',
                 Квартиль: '',
                 Издание: journalName,
