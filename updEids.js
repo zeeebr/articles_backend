@@ -1,17 +1,20 @@
 const {
+    Eids
+} = require('./models');
+const {
     ExportS,
+    NewEidS
+} = require('./models/scopus');
+const {
     ExportW,
-    Eids,
-    NewEidS,
     NewEidW
-} = require('./db');
+} = require('./models/wos');
 const exportS = new ExportS();
 const exportW = new ExportW();
 const eids = new Eids();
 const newEidS = new NewEidS();
 const newEidW = new NewEidW();
 
-//main();
 
 async function main() {
     let newIdScopus = await newEidS.findAll(['eid']);

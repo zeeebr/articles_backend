@@ -1,13 +1,11 @@
 const translit = require('./translit');
 const {
     Author
-} = require('./db');
+} = require('./models');
 const {
     testMiddleName
 } = require('./utils');
 const author = new Author();
-const log = console.log;
-const fs = require('fs').promises;
 
 
 async function main(path) {

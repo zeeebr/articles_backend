@@ -1,13 +1,17 @@
 const {
-    PaperW,
-    PaperS,
-    Connection,
-    Author
-} = require('./db');
-const paperW = new PaperW();
-const paperS = new PaperS();
-const connection = new Connection();
+    Author,
+    Connection
+} = require('./models');
+const {
+    PaperS
+} = require('./models/scopus');
+const {
+    PaperW
+} = require('./models/wos');
 const author = new Author();
+const connection = new Connection();
+const paperS = new PaperS();
+const paperW = new PaperW();
 
 
 async function getScopus(eid) {

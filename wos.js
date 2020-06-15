@@ -1,10 +1,12 @@
 const {
-    PaperW,
     Author,
     Connection,
-    Eids,
+    Eids
+} = require('./models');
+const {
+    PaperW,
     NewEidW
-} = require('./db');
+} = require('./models/wos');
 const {
     testMiddleName,
     initials
@@ -15,7 +17,6 @@ const connection = new Connection();
 const eids = new Eids();
 const newEidW = new NewEidW();
 const wosExport = require('./wosExport');
-const fs = require('fs').promises;
 
 async function main(data) {
     await parserWos(data);
@@ -152,6 +153,7 @@ async function parserConnections() {
 
     //console.log(arrConnection)
     await connection.save(arrConnection);
+    
     return true;
 }
 

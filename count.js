@@ -1,9 +1,11 @@
 const {
     PaperS,
+    NewEidS
+} = require('./models/scopus');
+const {
     PaperW,
-    NewEidS,
     NewEidW
-} = require('./db');
+} = require('./models/wos');
 const paperS = new PaperS();
 const paperW = new PaperW();
 const newEidS = new NewEidS();
@@ -81,7 +83,6 @@ async function main() {
         }
     };
 
-    //console.table(countTable);
     return countTable;
 }
 

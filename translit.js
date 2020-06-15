@@ -59,5 +59,3 @@ function translit(str) {
 }
 
 module.exports = translit;
-
-//console.log(translit('Чекардовский М.Н.'))

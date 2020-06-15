@@ -1,11 +1,15 @@
 const {
     Author,
-    PaperS,
-    PaperW,
     Connection,
-    ExportS,
     Eids
-} = require('./db');
+} = require('./models');
+const {
+    PaperS,
+    ExportS
+} = require('./models/scopus');
+const {
+    PaperW,
+} = require('./models/wos');
 const {
     levenshtein,
     getMaxOfArray,

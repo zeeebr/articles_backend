@@ -1,10 +1,12 @@
 const {
-    PaperS,
     Author,
     Connection,
-    Eids,
+    Eids
+} = require('./models');
+const {
+    PaperS,
     NewEidS
-} = require('./db');
+} = require('./models/scopus');
 const {
     testMiddleName
 } = require('./utils');
@@ -14,7 +16,6 @@ const connection = new Connection();
 const eids = new Eids();
 const newEidS = new NewEidS();
 const scopusExport = require('./scopusExport');
-const fs = require('fs').promises;
 
 
 async function main(data) {
