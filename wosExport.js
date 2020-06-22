@@ -11,7 +11,6 @@ const {
     ExportW
 } = require('./models/wos');
 const {
-    levenshtein,
     getMaxOfArray,
     uniqueArr
 } = require('./utils');
@@ -21,6 +20,7 @@ const paperW = new PaperW();
 const connection = new Connection();
 const eids = new Eids();
 const exportW = new ExportW();
+const levenshtein = require('js-levenshtein');
 
 async function main() {
     paperW.model.belongsToMany(author.model, {
@@ -59,7 +59,7 @@ async function main() {
 
             for (let k = 0; k < findAllScopus.length; k++) {
                 let s2 = findAllScopus[k]['topic'];
-                let compare = levenshtein(s1, s2);
+                let compare = Math.round((s1.length - levenshtein(s1, s2)) / s1.length * 100);
                 arrCompare.push(compare)
             }            
 
