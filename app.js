@@ -5,6 +5,7 @@ const scopusRouter = require('./routes/scopus');
 const wosRouter = require('./routes/wos');
 const bodyParser = require('body-parser');
 const app = express();
+require('./count');
 
 app.use(express.static('public'));
 

@@ -10,6 +10,15 @@ const paperS = new PaperS();
 const paperW = new PaperW();
 const newEidS = new NewEidS();
 const newEidW = new NewEidW();
+const asyncRedis = require('async-redis');
+const client = asyncRedis.createClient();
+const cron = require('node-cron');
+
+client.on("error", function (err) {
+    console.log("Error " + err);
+});
+
+cron.schedule('* * * * * *', main);
 
 async function main() {
     let count15w = await paperW.count('2015');
@@ -83,7 +92,7 @@ async function main() {
         }
     };
 
-    return countTable;
-}
+    await client.set('counter', JSON.stringify(countTable));
 
-module.exports = main;
+    return true;
+}

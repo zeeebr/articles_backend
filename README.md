@@ -1,6 +1,6 @@
-# Articles
+# ArticlesApp
 
-Articles is an application for collecting bibliographic data of organization employees in an international citation database **Scopus** and **Web of Science**. The application recognizes the author’s affiliation with the department and the institute. The list of articles of the organization is maintained in a primitive form in Excel. To exclude manual data entry, the application processes an array of articles and exports data in an already existing table format for Excel.
+ArticlesApp is an application for collecting bibliographic data of organization employees in **Scopus** and **Web of Science** international citation database. The application recognizes the author’s affiliation with the department and the institute. The list of articles of the organization is maintained in a primitive form in Excel. To exclude manual data entry, the application processes an array of articles and exports data in an already existing table format for Excel.
 
 # Installation
   - Clone the repository by using `git clone`.
@@ -67,7 +67,7 @@ node app.js
       -  Body: Array of articles.
 - **/wos/delete/:id** :
     - Method: **DELETE**
-      -  Deletes an article from the database by id.
+      -  Description: Deletes an article from the database by id.
 
 ## Client
 The client code can be viewed at the link: https://github.com/zeeebr/articles_frontend
