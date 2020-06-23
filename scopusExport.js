@@ -29,11 +29,6 @@ client.on("error", function (err) {
 });
 
 async function main() {
-    /* let eidsData = await parser('data/eids.csv');
-    log(eidsData)
-
-    await eids.save(eidsData) */
-
     paperS.model.belongsToMany(author.model, {
         through: connection.model,
         foreignKey: 'paperId'
