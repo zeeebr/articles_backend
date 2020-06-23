@@ -31,9 +31,7 @@ class Author {
         })
     }
     sync() {
-        return this.model.sync({
-            force: true
-        })
+        return this.model.sync()
     }
     async save(data) {
         try {
@@ -121,9 +119,7 @@ class Connection {
         })
     }
     sync() {
-        return this.model.sync({
-            force: true
-        })
+        return this.model.sync()
     }
     async save(data) {
         try {
@@ -176,9 +172,7 @@ class Eids {
         })
     }
     sync() {
-        return this.model.sync({
-            force: true
-        })
+        return this.model.sync()
     }
     async save(data) {
         try {
@@ -188,11 +182,7 @@ class Eids {
             })
             console.log('\x1b[36m%s\x1b[0m', 'Data updated!')
         } catch (err) {
-            //console.log(err)
             console.log(err)
-            //fs.writeFileSync("err.txt", err)
-            //console.log(err.sql)
-            //[ 'name', 'parent', 'original', 'sql', 'parameters' ]
         }
         return true;
     }

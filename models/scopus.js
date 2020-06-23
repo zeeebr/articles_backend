@@ -163,6 +163,8 @@ class ExportS {
             Институт: Sequelize.STRING,
             Кафедра: Sequelize.STRING,
             Год: Sequelize.STRING,
+            Pscreen: Sequelize.STRING,
+            Перевод: Sequelize.STRING
         }, {
             freezeTableName: true,
         })
@@ -176,21 +178,18 @@ class ExportS {
         try {
             await this.model.truncate();
             await this.model.bulkCreate(data, {
-                fields: ["Индекс", "Тип", "ИФ", "Квартиль", "Издание", "Проверка", "Статья", "DOI", "Идентификатор", "ID", "Name",  "Макрос", "Дубляж", "Номер", "Страницы", "Автор", "Институт", "Кафедра", "Год"],
-                updateOnDuplicate: ["Индекс", "Тип", "ИФ", "Квартиль", "Издание", "Статья", "DOI", "Идентификатор", "Макрос", "Дубляж", "Номер", "Страницы", "Автор", "Институт", "Кафедра", "Год"]
+                fields: ["Индекс", "Тип", "ИФ", "Квартиль", "Издание", "Проверка", "Статья", "DOI", "Идентификатор", "ID", "Name",  "Макрос", "Дубляж", "Номер", "Страницы", "Автор", "Институт", "Кафедра", "Год", "Pscreen", "Перевод"],
+                updateOnDuplicate: ["Индекс", "Тип", "ИФ", "Квартиль", "Издание", "Статья", "DOI", "Идентификатор", "Макрос", "Дубляж", "Номер", "Страницы", "Автор", "Институт", "Кафедра", "Год", "Pscreen", "Перевод"]
             })
             console.log('\x1b[36m%s\x1b[0m', 'Export new papers complete!')
         } catch (err) {
             console.log(err.message)
-            //fs.writeFileSync("err.txt", err)
-            //console.log(err.sql)
-            //[ 'name', 'parent', 'original', 'sql', 'parameters' ]
         }
         return true;
     }
     async findAll() {
         return await this.model.findAll({
-            attributes: ["Индекс", "Тип", "ИФ", "Квартиль", "Издание", "Проверка", "Статья", "DOI", "Идентификатор", "ID", "Name",  "Макрос", "Дубляж", "Номер", "Страницы", "Автор", "Институт", "Кафедра", "Год"],
+            attributes: ["Индекс", "Тип", "ИФ", "Квартиль", "Издание", "Проверка", "Статья", "DOI", "Идентификатор", "ID", "Name",  "Макрос", "Дубляж", "Номер", "Страницы", "Автор", "Институт", "Кафедра", "Год", "Pscreen", "Перевод"],
             raw: true
         })
     }

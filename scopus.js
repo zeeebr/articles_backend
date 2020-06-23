@@ -49,7 +49,6 @@ async function parserScopus(ScopusData) {
         });
     }
     
-    //fs.writeFile('errorScopus.json', JSON.stringify(arrScopusData))
     await paperS.save(arrScopusData);
 
     return true;
@@ -72,7 +71,6 @@ async function newEidsScopus() {
         });
     }
 
-    //console.log(newEids)
     await newEidS.save(newEidsScopus);
 
     return true;
@@ -81,7 +79,7 @@ async function newEidsScopus() {
 // Parses organization employees
 async function parserAuthors() {
     let authorScopus = await paperS.findAllFalse(['eid', 'author', 'affil'])
-    //console.log(authorScopus)
+    
     let arrScopusAuthors = [];
     for (let i = 0; i < authorScopus.length; i++) {
         let arrAuthors = authorScopus[i].author.split(', ');
@@ -107,9 +105,9 @@ async function parserAuthors() {
             ourAuthors: ourAuthors
         })
     }
-    //console.log(arrScopusAuthors)
-
+    
     await paperS.saveOurAuthors(arrScopusAuthors);
+
     return true;
 }
 
@@ -137,11 +135,9 @@ async function parserConnections() {
             }
         }
     }
-    //log(arrConnection)
-    //log(errConnection)
-    //fs.writeFile('errorConnectionScopus.json', JSON.stringify(errConnection))
 
     await connection.save(arrConnection) 
+
     return true;
 }
 

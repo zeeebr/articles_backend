@@ -21,6 +21,12 @@ const connection = new Connection();
 const eids = new Eids();
 const exportS = new ExportS();
 const levenshtein = require('js-levenshtein');
+const asyncRedis = require('async-redis');
+const client = asyncRedis.createClient();
+
+client.on("error", function (err) {
+    console.log("Error " + err);
+});
 
 async function main() {
     /* let eidsData = await parser('data/eids.csv');
@@ -50,9 +56,7 @@ async function main() {
 
     for (let i = 0; i < findAllScopus.length; i++) {
         let findEid = oldId.find(item => item.eid == findAllScopus[i]['eid'])
-        if (findEid) {
-            //log('Есть в экселе!')
-        } else {
+        if (!findEid) {
             newEids.push({
                 eid: findAllScopus[i]['eid']
             })
@@ -89,27 +93,21 @@ async function main() {
                 Автор: ((findAllScopus[i]['Authors.alias']) ? findAllScopus[i]['Authors.alias'] : findAllScopus[i]['ourAuthors']),
                 Институт: ((findAllScopus[i]['Authors.alias']) ? findAllScopus[i]['Authors.inst'] : ''),
                 Кафедра: ((findAllScopus[i]['Authors.alias']) ? findAllScopus[i]['Authors.cathedra'] : ''),
-                Год: findAllScopus[i].year
+                Год: findAllScopus[i].year,
+                Pscreen: '',
+                Перевод: ((findAllScopus[i]['Authors.name']) ? findAllScopus[i]['Authors.name'] : findAllScopus[i]['ourAuthors'])
             }
 
             newPapers.push(paper)
         }
     }
 
-    //log(newEids)
+    await exportS.save(newPapers);
 
-    /* let uniqueEids = uniqueArr(newEids);
+    let uniqueEids = uniqueArr(newEids);
     
-    await fs.writeFile('./data/newEids.json', JSON.stringify(uniqueEids))
-
-    let data = await fs.readFile('./data/newEids.json', 'utf-8');
+    await client.set('newScopus', `${uniqueEids.length} Scopus papers successfully added in ArticleApp`);
     
-    console.log(JSON.parse(data)) */
-
-    //await eids.save(JSON.parse(data))
-
-    await exportS.save(newPapers)
-
     return true;
 }
 

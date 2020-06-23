@@ -21,6 +21,12 @@ const connection = new Connection();
 const eids = new Eids();
 const exportW = new ExportW();
 const levenshtein = require('js-levenshtein');
+const asyncRedis = require('async-redis');
+const client = asyncRedis.createClient();
+
+client.on("error", function (err) {
+    console.log("Error " + err);
+});
 
 async function main() {
     paperW.model.belongsToMany(author.model, {
@@ -39,16 +45,13 @@ async function main() {
         all: true
     }]);
     let oldId = await eids.findAll(['id', 'eid']);
-    //log(findAllWos)
-
+    
     let newPapers = [];
     let newEids = [];
 
     for (let i = 0; i < findAllWos.length; i++) {
         let findEid = oldId.find(item => item.eid == findAllWos[i]['eid'])
-        if (findEid) {
-            //log('Есть в экселе!')
-        } else {
+        if (!findEid) {
             newEids.push({ 
                 eid: findAllWos[i]['eid'] 
             })
@@ -86,26 +89,23 @@ async function main() {
                 Автор: ((findAllWos[i]['Authors.alias']) ? findAllWos[i]['Authors.alias'] : findAllWos[i]['ourAuthors']),
                 Институт: ((findAllWos[i]['Authors.alias']) ? findAllWos[i]['Authors.inst'] : ''),
                 Кафедра: ((findAllWos[i]['Authors.alias']) ? findAllWos[i]['Authors.cathedra'] : ''),
-                Год: findAllWos[i].year
+                Год: findAllWos[i].year,
+                Pscreen: '',
+                Перевод: ((findAllWos[i]['Authors.name']) ? findAllWos[i]['Authors.name'] : findAllWos[i]['ourAuthors'])
             }
             
             newPapers.push(paper)
         }
     }
 
-    //log(newEids)
-
-    /* let uniqueEids = uniqueArr(newEids);
-    
-    await fs.writeFile('./data/newEids.json', JSON.stringify(uniqueEids))
-
-    let data = await fs.readFile('./data/newEids.json', 'utf-8');
-    
-    console.log(JSON.parse(data)) */
-
-    //await eids.save(JSON.parse(data))
-
     await exportW.save(newPapers)
+
+    let uniqueEids = uniqueArr(newEids);
+    
+    await client.set('newWos', `${uniqueEids.length} Web of Science papers successfully added in ArticleApp`);
+
+    let res = await client.get('newWos');
+    console.log(res)
 
     return true;
 }
