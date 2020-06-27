@@ -15,5 +15,7 @@ router.post("/parser",  scopus_controller.parser);
 
 router.delete("/delete/:id", scopus_controller.delete);
 
+router.get("/status", scopus_controller.status);
+
 
 module.exports = router;

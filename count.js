@@ -88,7 +88,8 @@ async function main() {
             '2018': count18s + count18w,
             '2019': count19s + count19w,
             '2020': count20s + count20w,
-            'all': count15s + count16s + count17s + count18s + count19s + count20s + count15w + count16w + count17w + count18w + count19w + count20w
+            'all': count15s + count16s + count17s + count18s + count19s + count20s + count15w + count16w + count17w + count18w + count19w + count20w,
+            'all+': count15sP + count16sP + count17sP + count18sP + count19sP + count20sP + count15wP + count16wP + count17wP + count18wP + count19wP + count20wP
         }
     };
 

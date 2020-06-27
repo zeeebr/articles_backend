@@ -4,6 +4,12 @@ const {
 const exportS = new ExportS();
 const paperCorrection = require('../correction');
 const paperManager = require('../index');
+const asyncRedis = require('async-redis');
+const client = asyncRedis.createClient();
+
+client.on("error", function (err) {
+    console.log("Error " + err);
+});
 
 
 exports.export = async (req, res, next) => {
@@ -55,6 +61,15 @@ exports.delete = async (req, res, next) => {
     try {
         await paperCorrection.deleteScopus(req.params.id);
         res.sendStatus(200);
+    } catch(err) {
+        next(err)
+    }
+}
+
+exports.status = async (req, res, next) => {
+    try {
+        let status = await client.get('statusScopus');
+        res.send(status);
     } catch (err) {
         next(err)
     }

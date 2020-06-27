@@ -49,13 +49,18 @@ async function main() {
     let newPapers = [];
     let newEids = [];
 
+    for (let e = 0; e < findAllWos.length; e++) {
+        let findEid = oldId.find(item => item.eid == findAllWos[e]['eid']);
+        if (!findEid) {
+            newEids.push({
+                eid: findAllWos[e]['eid']
+            })
+        }
+    }
+
     for (let i = 0; i < findAllWos.length; i++) {
         let findEid = oldId.find(item => item.eid == findAllWos[i]['eid'])
         if (!findEid) {
-            newEids.push({ 
-                eid: findAllWos[i]['eid'] 
-            })
-
             let arrCompare = [];
 
             let s1 = findAllWos[i]['topic'];
@@ -67,7 +72,7 @@ async function main() {
             }            
 
             let maxCompare = getMaxOfArray(arrCompare);
-            console.log(maxCompare);
+            //console.log(maxCompare);
 
             let journalName = findAllWos[i].journal[0].toUpperCase() + findAllWos[i].journal.toLowerCase().slice(1);
 
@@ -95,17 +100,20 @@ async function main() {
             }
             
             newPapers.push(paper)
+
+            if(newPapers.length / newEids.length === 1) {
+                let uniqueEids = uniqueArr(newEids);
+                await client.set('statusWos', `100% (${uniqueEids.length} Web of Science papers successfully added in ArticlesApp!)`);
+            } else {
+                await client.set('statusWos', `${Math.round(newPapers.length / newEids.length * 100)}%`)
+            }
+
+            let status = await client.get('statusWos')
+            console.log(status)
         }
     }
 
     await exportW.save(newPapers)
-
-    let uniqueEids = uniqueArr(newEids);
-    
-    await client.set('newWos', `${uniqueEids.length} Web of Science papers successfully added in ArticleApp`);
-
-    let res = await client.get('newWos');
-    console.log(res)
 
     return true;
 }

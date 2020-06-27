@@ -15,5 +15,7 @@ router.post("/parser", wos_controller.parser);
 
 router.delete("/delete/:id", wos_controller.delete);
 
+router.get("/status", wos_controller.status);
+
 
 module.exports = router;

@@ -49,13 +49,18 @@ async function main() {
     let newPapers = [];
     let newEids = [];
 
+    for (let e = 0; e < findAllScopus.length; e++) {
+        let findEid = oldId.find(item => item.eid == findAllScopus[e]['eid']);
+        if (!findEid) {
+            newEids.push({
+                eid: findAllScopus[e]['eid']
+            })
+        }
+    }
+
     for (let i = 0; i < findAllScopus.length; i++) {
         let findEid = oldId.find(item => item.eid == findAllScopus[i]['eid'])
         if (!findEid) {
-            newEids.push({
-                eid: findAllScopus[i]['eid']
-            })
-
             let arrCompare = [];
 
             let s1 = findAllScopus[i]['topic'];
@@ -67,7 +72,7 @@ async function main() {
             }
 
             let maxCompare = getMaxOfArray(arrCompare);
-            console.log(maxCompare);
+            //console.log(maxCompare);
 
             let paper = {
                 Индекс: 'Scopus',
@@ -94,15 +99,23 @@ async function main() {
             }
 
             newPapers.push(paper)
+
+            //console.log(newPapers.length / newEids.length)
+
+            if(newPapers.length / newEids.length === 1) {
+                let uniqueEids = uniqueArr(newEids);
+                await client.set('statusScopus', `100% (${uniqueEids.length} Scopus papers successfully added in ArticlesApp!)`);
+            } else {
+                await client.set('statusScopus', `${Math.round(newPapers.length / newEids.length * 100)}%`)
+            }
+
+            let status = await client.get('statusScopus')
+            console.log(status)
         }
     }
-
+  
     await exportS.save(newPapers);
-
-    let uniqueEids = uniqueArr(newEids);
-    
-    await client.set('newScopus', `${uniqueEids.length} Scopus papers successfully added in ArticleApp`);
-    
+ 
     return true;
 }
 
