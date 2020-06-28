@@ -11,7 +11,7 @@ exports.count = async (req, res, next) => {
         let data = await client.get('counter');
         res.send(JSON.parse(data));
     } catch (err) {
-        err.status = 404;
+        err.status = 400;
         next(err);
     }
 }
@@ -21,7 +21,7 @@ exports.eids = async (req, res, next) => {
         await paperManager.updEids();
         res.sendStatus(200)
     } catch (err) {
-        err.status = 404;
+        err.status = 400;
         next(err);
     }
 }
