@@ -96,7 +96,7 @@ async function main() {
                 Кафедра: ((findAllWos[i]['Authors.alias']) ? findAllWos[i]['Authors.cathedra'] : ''),
                 Год: findAllWos[i].year,
                 Pscreen: '',
-                Перевод: ((findAllWos[i]['Authors.name']) ? findAllWos[i]['Authors.name'] : findAllWos[i]['ourAuthors'])
+                Перевод: findAllWos[i]['ourAuthors']
             }
             
             newPapers.push(paper)

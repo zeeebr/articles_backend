@@ -1,3 +1,6 @@
+const https = require('https');
+const http = require('http');
+const fs = require('fs');
 const express = require("express");
 const env = require('./env.js');
 const router = require('./routes');
@@ -6,6 +9,11 @@ const wosRouter = require('./routes/wos');
 const bodyParser = require('body-parser');
 const app = express();
 require('./count');
+
+const options = {
+    cert: fs.readFileSync(env.SSL_CERT),
+    key: fs.readFileSync(env.SSL_KEY)
+};
 
 app.use(express.static('public'));
 
@@ -18,6 +26,8 @@ app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
     next();
 });
+
+app.use(require('helmet')());
 
 app.use('/', router);
 
@@ -39,6 +49,8 @@ app.use((err, req, res, next) => {
     })
 })
 
-app.listen(env.PORT, () => {
+http.createServer(app).listen(env.PORT,  () => {
     console.log(`App listening on port ${env.PORT}`);
 });
+
+https.createServer(options, app).listen(env.HTTPS_PORT);
