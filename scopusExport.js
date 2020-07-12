@@ -106,7 +106,7 @@ async function main() {
                 let uniqueEids = uniqueArr(newEids);
                 await client.set('statusScopus', `100% (${uniqueEids.length} Scopus papers successfully added in ArticlesApp!)`);
             } else {
-                await client.set('statusScopus', `${Math.round(newPapers.length / newEids.length * 100)}%`)
+                await client.set('statusScopus', `${60 + Math.round(newPapers.length / newEids.length * 100 * 0.4)}%`)
             }
 
             let status = await client.get('statusScopus')

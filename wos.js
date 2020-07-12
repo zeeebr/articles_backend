@@ -17,6 +17,12 @@ const connection = new Connection();
 const eids = new Eids();
 const newEidW = new NewEidW();
 const wosExport = require('./wosExport');
+const asyncRedis = require('async-redis');
+const client = asyncRedis.createClient();
+
+client.on("error", function (err) {
+    console.log("Error " + err);
+});
 
 async function main(data) {
     await parserWos(data);
@@ -48,9 +54,13 @@ async function parserWos(WosData) {
             frezee: false
         });
     }
-    //await fs.writeFile('./data/newWos.json', JSON.stringify(arrWosData))
-    //console.log(arrWosData)
+    
     await paperW.save(arrWosData);
+    await client.set('statusWos', `15%`)
+
+    let status = await client.get('statusWos')
+    console.log(status)
+
     return true;
 }
 
@@ -73,6 +83,11 @@ async function newEidsWos() {
 
     //console.log(newEids)
     await newEidW.save(newEidsWos);
+
+    await client.set('statusWos', `30%`)
+
+    let status = await client.get('statusWos')
+    console.log(status)
 
     return true;
 }
@@ -126,6 +141,12 @@ async function parserAuthors() {
     //console.log(arrWosAuthors)
 
     await paperW.saveOurAuthors(arrWosAuthors);
+
+    await client.set('statusWos', `45%`)
+
+    let status = await client.get('statusWos')
+    console.log(status)
+
     return true;
 }
 
@@ -153,6 +174,11 @@ async function parserConnections() {
 
     //console.log(arrConnection)
     await connection.save(arrConnection);
+
+    await client.set('statusWos', `60%`)
+
+    let status = await client.get('statusWos')
+    console.log(status)
     
     return true;
 }

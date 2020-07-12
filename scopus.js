@@ -16,6 +16,12 @@ const connection = new Connection();
 const eids = new Eids();
 const newEidS = new NewEidS();
 const scopusExport = require('./scopusExport');
+const asyncRedis = require('async-redis');
+const client = asyncRedis.createClient();
+
+client.on("error", function (err) {
+    console.log("Error " + err);
+});
 
 
 async function main(data) {
@@ -50,6 +56,10 @@ async function parserScopus(ScopusData) {
     }
     
     await paperS.save(arrScopusData);
+    await client.set('statusScopus', `15%`)
+
+    let status = await client.get('statusScopus')
+    console.log(status)
 
     return true;
 }
@@ -72,6 +82,10 @@ async function newEidsScopus() {
     }
 
     await newEidS.save(newEidsScopus);
+    await client.set('statusScopus', `30%`)
+
+    let status = await client.get('statusScopus')
+    console.log(status)
 
     return true;
 }
@@ -107,6 +121,10 @@ async function parserAuthors() {
     }
     
     await paperS.saveOurAuthors(arrScopusAuthors);
+    await client.set('statusScopus', `45%`)
+
+    let status = await client.get('statusScopus')
+    console.log(status)
 
     return true;
 }
@@ -136,7 +154,11 @@ async function parserConnections() {
         }
     }
 
-    await connection.save(arrConnection) 
+    await connection.save(arrConnection)
+    await client.set('statusScopus', `60%`)
+
+    let status = await client.get('statusScopus')
+    console.log(status)
 
     return true;
 }

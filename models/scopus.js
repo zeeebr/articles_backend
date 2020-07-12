@@ -25,7 +25,7 @@ class PaperS {
             pages: Sequelize.STRING,
             author: Sequelize.STRING(10240),
             ourAuthors: Sequelize.STRING(1024),
-            affil: Sequelize.STRING(51200),
+            affil: Sequelize.TEXT,
             year: Sequelize.STRING,
             frezee: Sequelize.BOOLEAN
         }, {
