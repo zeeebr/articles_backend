@@ -8,7 +8,8 @@ const {
     NewEidS
 } = require('./models/scopus');
 const {
-    testMiddleName
+    testMiddleName,
+    uniqueArr
 } = require('./utils');
 const paperS = new PaperS();
 const author = new Author();
@@ -153,8 +154,9 @@ async function parserConnections() {
             }
         }
     }
-
-    await connection.save(arrConnection)
+    
+    let uniqueArrConnection = uniqueArr(arrConnection)
+    await connection.save(uniqueArrConnection)
     await client.set('statusScopus', `60%`)
 
     let status = await client.get('statusScopus')

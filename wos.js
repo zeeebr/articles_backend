@@ -9,7 +9,8 @@ const {
 } = require('./models/wos');
 const {
     testMiddleName,
-    initials
+    initials,
+    uniqueArr
 } = require('./utils');
 const paperW = new PaperW();
 const author = new Author();
@@ -172,8 +173,8 @@ async function parserConnections() {
         }
     }
 
-    //console.log(arrConnection)
-    await connection.save(arrConnection);
+    let uniqueArrConnection = uniqueArr(arrConnection)
+    await connection.save(uniqueArrConnection)
 
     await client.set('statusWos', `60%`)
 
