@@ -16,15 +16,19 @@ function initials(str) {
 }
 
 function uniqueArr(arr) {
-    let eids = new Map();
-    let uniqueAdd = []
+    let test = new Set()
+    let unique = []
+
     for (let i = 0; i < arr.length; i++) {
-        if (!eids.has(arr[i].eid)) {
-        eids.set(arr[i].eid, true);
-        uniqueAdd.push(arr[i])
+        if (!test.has(JSON.stringify(arr[i]))) {
+        test.add(JSON.stringify(arr[i]))
+        unique.push(arr[i])
+        } else {
+            console.log('error :', arr[i])
         }
     }
-    return uniqueAdd;
+
+    return unique;
 }
 
 exports.getMaxOfArray = getMaxOfArray;
