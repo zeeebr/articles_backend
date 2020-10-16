@@ -9,8 +9,8 @@ const main = envalid.cleanEnv(process.env, {
     DB_HOST:            str(),
     PORT:               port(),
     HTTPS_PORT:         port(),
-    SSL_CERT:           str(),
-    SSL_KEY:            str() 
+    REDIS_HOST:         str(),
+    REDIS_PORT:          port()
 })
 
 module.exports = main;

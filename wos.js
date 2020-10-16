@@ -19,7 +19,11 @@ const eids = new Eids();
 const newEidW = new NewEidW();
 const wosExport = require('./wosExport');
 const asyncRedis = require('async-redis');
-const client = asyncRedis.createClient();
+const env = require('./env.js');
+const client = asyncRedis.createClient({
+    host: env.REDIS_HOST,
+    port: env.REDIS_PORT
+});
 
 client.on("error", function (err) {
     console.log("Error " + err);

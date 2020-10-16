@@ -1,6 +1,5 @@
 const https = require('https');
 const http = require('http');
-const fs = require('fs');
 const express = require("express");
 const env = require('./env.js');
 const router = require('./routes');
@@ -10,10 +9,6 @@ const bodyParser = require('body-parser');
 const app = express();
 require('./count');
 
-const options = {
-    cert: fs.readFileSync(env.SSL_CERT),
-    key: fs.readFileSync(env.SSL_KEY)
-};
 
 app.use(express.static('public'));
 
@@ -53,4 +48,4 @@ http.createServer(app).listen(env.PORT,  () => {
     console.log(`App listening on port ${env.PORT}`);
 });
 
-https.createServer(options, app).listen(env.HTTPS_PORT);
+//https.createServer(options, app).listen(env.HTTPS_PORT);

@@ -10,8 +10,12 @@ const paperS = new PaperS();
 const paperW = new PaperW();
 const newEidS = new NewEidS();
 const newEidW = new NewEidW();
+const env = require('./env.js');
 const asyncRedis = require('async-redis');
-const client = asyncRedis.createClient();
+const client = asyncRedis.createClient({
+    host: env.REDIS_HOST,
+    port: env.REDIS_PORT
+});
 const cron = require('node-cron');
 
 client.on("error", function (err) {
