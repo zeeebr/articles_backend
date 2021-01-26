@@ -12,8 +12,8 @@ require('./count');
 
 app.use(express.static('public'));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '50mb'}));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -53,6 +53,3 @@ if (env.HTTPS) {
         console.log(`App listening on port ${env.PORT} (http)`)
     });
 }
-
-
-//
