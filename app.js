@@ -44,8 +44,15 @@ app.use((err, req, res, next) => {
     })
 })
 
-http.createServer(app).listen(env.PORT,  () => {
-    console.log(`App listening on port ${env.PORT}`);
-});
+if (env.HTTPS) {
+    https.createServer(options, app).listen(env.HTTPS_PORT,  () => {
+        console.log(`App listening on port ${env.PORT} (https)`)
+    });
+} else {
+    http.createServer(app).listen(env.PORT,  () => {
+        console.log(`App listening on port ${env.PORT} (http)`)
+    });
+}
 
-//https.createServer(options, app).listen(env.HTTPS_PORT);
+
+//
